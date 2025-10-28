@@ -5,10 +5,10 @@ const coursecategorySchema=mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Courses'
     },
-    name:{
+    categoryname:{
         type:String,
     },
-    description:{
+    categorydescription:{
         type:String
     }
 },{timestamps:true})
