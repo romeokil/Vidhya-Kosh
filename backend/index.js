@@ -5,6 +5,7 @@ import cors from 'cors'
 import User from './models/User.js'
 import Instructor from './models/Instructor.js';
 import Course from './models/Course.js';
+import enrolledCourse from './models/EnrolledCourses.js';
 const app=express();
 dotenv.config();
 const PORT=8000;
@@ -308,13 +309,59 @@ app.post('/deleteCourse',async(req,res)=>{
 })
 
 
+// enrolled courses routes
+app.post('/checkenrolledCourse',async(req,res)=>{
+    const {name,course}=req.body;
+    const allenrolledCourse=await enrolledCourse.find({name});
+    const checkenrolledcourse=allenrolledCourse.map((enrollcourse)=>{
+        return JSON.stringify(enrollcourse.toLowerCase())===JSON.stringify(course.toLowerCase())
+    })
+    if(checkenrolledcourse){
+        return res.status(401).json({
+            "message":"Sorry you have already enrolled for this Course"
+        })
+    }
+    else{
+        const date=new Date();
+        let newenroll=await enrolledCourse.create({
+            name,
+            course,
+            enrolledAt:date.toLocaleDateString()
+        })
+        newenroll.save();
+        return res.status(201).json({
+            "message":"Congrats You have enrolled for this course",
+            newenroll
+        })
+    }
+})
+
+// get enrolled course
+app.get('/getallenrolledCourse',async(req,res)=>{
+    const getallenrolledCourse=await enrolledCourse.find({});
+    return res.status(201).json({
+        "message":"All enrolled courses retrived!!",
+        getallenrolledCourse
+    })
+})
+
+app.post('/getenrolledCourse',async(req,res)=>{
+    const {name}=req.body;
+    const getenrolledCourse=await enrolledCourse.find({name});
+    return res.status(201).json({
+        "message":"You have enrolled for this courses",
+        getenrolledCourse
+    })
+})
+
+
 app.listen(PORT,async()=>{
     try{
         await mongoose.connect(process.env.MONGO_URL);
         console.log(`Database connected Successfully!!`)
     }
     catch(error){
-
+        console.log('Error while connecting to database')
     }
     console.log(`Server is running at ${PORT}`);
 })
