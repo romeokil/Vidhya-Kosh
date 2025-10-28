@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv'
 import cors from 'cors'
 import User from './models/User.js'
+import Instructor from './models/Instructor.js';
 const app=express();
 dotenv.config();
 const PORT=8000;
@@ -113,6 +114,7 @@ app.post('/update',async(req,res)=>{
         password,
         role
     })
+
     return res.status(201).json({
         "message":"User updated Successfully!!",
         updatedUser
@@ -120,6 +122,100 @@ app.post('/update',async(req,res)=>{
 
 })
 
+
+// instructor routes.
+
+//register Instructor
+
+app.post('/registerInstructor',async(req,res)=>{
+    const {name,password,bio,rating}=req.body;
+    if(!name || !password || !bio || !rating){
+        return res.status(401).json({
+            "message":"Sorry Missing credentials"
+        })
+    }
+    const alreadyregistered=await Instructor.findOne({name});
+    if(alreadyregistered){
+        return res.status(401).json({
+            "message":"You have already registered!!"
+        })
+    }
+    const newInstructor=await Instructor.create({
+        name,
+        password,
+        bio,
+        rating
+    })
+    newInstructor.save();
+    return res.status(201).json({
+        "message":"Instructor Registered Successfully!!",
+        newInstructor
+    })
+})
+
+// login Instructor
+
+app.post('/loginInstructor',async(req,res)=>{
+    const {name,password}=req.body;
+    if(!name || !password || !bio || !rating){
+        return res.status(401).json({
+            "message":"Sorry Missing credentials!!",
+        })
+    }
+    // checked registered user
+    const registeredUser=await Instructor.findOne({name});
+    if(!registeredUser){
+        return res.status(401).json({
+            "message":"Sorry No Instructor registered with this name"
+        })
+    }
+    else{
+        // agr registered user hai toh check for other credentials.
+        const checkpassword=JSON.stringify(registeredUser.password)===JSON.stringify(password);
+        if(!checkpassword){
+            return res.status(401).json({
+                "message":"Sorry But password is wrong"
+            })
+        }
+        else{
+            return res.status(201).json({
+                "message":"Logged in successfully!!",
+                registeredUser
+            })
+        }
+    }
+})
+
+
+// logout Instructor
+
+app.get('/logoutInstructor',(req,res)=>{
+    return res.status(201).json({
+        "message":"Logout Successfully!!"
+    })
+})
+
+// update Instructor
+
+app.post('/updateInstructor',async(req,res)=>{
+    const {name,password,bio,rating}=req.body;
+    const findInstructor=await Instructor.findOne({name});
+    if(!findInstructor){
+        return res.status(201).json({
+            "message":"Couldn't able to find Instructor"
+        })
+    }
+    const updateInstructor=await findInstructor.updateOne({
+        name,
+        password,
+        bio,
+        rating
+    })
+    return res.status(201).json({
+        "message":"Instructor Updated Successfully!!",
+        updateInstructor
+    })
+})
 
 
 
