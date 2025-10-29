@@ -23,7 +23,8 @@ export const register=async(req,res)=>{
         })
         registerCourse.save();
         return res.status(201).json({
-            "message":"Course Successfully Registered!!"
+            "message":"Course Successfully Registered!!",
+            registerCourse
         })
     }
 }
@@ -34,7 +35,7 @@ export const getallcourse=async(req,res)=>{
     const getallCourses=await Course.find({});
     if(!getallCourses){
         return res.status(401).json({
-            "message":"Sorry Till now No course Registered!!"
+            "message":"Sorry Till now No course Registered!!",
         })
     }
     else{
@@ -48,31 +49,29 @@ export const getallcourse=async(req,res)=>{
 // update course
 
 export const update=async(req,res)=>{
+    const courseId=req.params.courseId;
     const {name,description,price}=req.body;
-
-    const isCourse=await Course.findOne({name});
+    const isCourse=await Course.findByIdAndUpdate(courseId,{
+        name,
+        description,
+        price
+    },{new:true})
     if(!isCourse){
         return res.status(401).json({
             "message":"Sorry No course with this name"
         })
     }
     else{
-        const updatedCourse=isCourse.updateOne({
-            name,
-            description,
-            price
-        })
-        await updatedCourse.save();
         return res.status(201).json({
-            "message":"Course updated Successfully!!"
+            "message":"Course updated Successfully!!",
+            updatedCourse:isCourse
         })
     }
 }
 
 export const deletecourse=async(req,res)=>{
-    const {name}=req.body;
-    const newname=name.toLowerCase();
-    const isCourse=await Course.findOne({newname});
+    const courseId=req.params.courseId;
+    const isCourse=await Course.findByIdAndDelete(courseId);
     if(!isCourse){
         return res.status(401).json({
             "message":"Sorry Can't delete the record with this name"
