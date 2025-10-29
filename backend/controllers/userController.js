@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import jwt from 'jsonwebtoken';
 
 // register route
 
@@ -34,6 +35,7 @@ export const register=async(req,res)=>{
 
 export const login=async(req,res)=>{
     const {name,password,role}=req.body;
+
         if(!name || !password || !role){
         return res.status(401).json({
             "message":"Missing credentials!!"
@@ -49,7 +51,7 @@ export const login=async(req,res)=>{
     // in case if registered user 
     else{
         // check for password and role match
-        let checkpassword=JSON.stringify(password)===JSON.stringify(registeredUser.password);
+        let checkpassword=JSON.stringify(password.toLowerCase())===JSON.stringify((registeredUser.password).toLowerCase());
         if(!checkpassword){
             return res.status(401).json({
                 "message":"Sorry Your password is incorrect"
@@ -64,7 +66,8 @@ export const login=async(req,res)=>{
                 })
             }
             else{
-                return res.status(201).json({
+                let token=jwt.sign({id:registeredUser._id},process.env.JWT_SECRET,{expiresIn:'1h'});
+                return res.status(201).cookie({'token':token}).json({
                     "message":"Logged in Successfully!!",
                     registeredUser
                 })
@@ -77,7 +80,12 @@ export const login=async(req,res)=>{
 
 export const logout=async(req,res)=>{
     // at this place with the help of cookie we will check whether user is logged in or not at later stage.
-    return res.status(201).json({
+    if(!token){
+        return res.status(401).json({
+            "message":"Sorry You need to login first!!"
+        })
+    }
+    return res.status(201).cookie('token','').json({
         "message":"Logged out Successfully!!"
     })
 }
