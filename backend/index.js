@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose';
 import dotenv from 'dotenv'
 import cors from 'cors'
+import cookieParser from 'cookie-parser';
 import userRoute from './routes/UserRoute.js';
 import courseRoute from './routes/courseRoute.js';
 import instructorRoute from './routes/instructorRoute.js'
@@ -12,6 +13,7 @@ dotenv.config();
 const PORT=8000;
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.get('/',(req,res)=>{
     res.status(201).json({
         "message":"Welcome to the Get request!"

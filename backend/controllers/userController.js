@@ -35,13 +35,16 @@ export const register=async(req,res)=>{
 
 export const login=async(req,res)=>{
     const {name,password,role}=req.body;
-
+        console.log("name",name);
+        console.log("password",password);
+        console.log("role",role);
         if(!name || !password || !role){
         return res.status(401).json({
             "message":"Missing credentials!!"
         })
     }
     const registeredUser=await User.findOne({name});
+    console.log("registeredUser-> ",registeredUser)
     // in case unknown user / unregistered user if try to logged in.
     if(!registeredUser){
         return res.status(401).json({
@@ -52,6 +55,7 @@ export const login=async(req,res)=>{
     else{
         // check for password and role match
         let checkpassword=JSON.stringify(password.toLowerCase())===JSON.stringify((registeredUser.password).toLowerCase());
+        console.log("checkpassword",checkpassword);
         if(!checkpassword){
             return res.status(401).json({
                 "message":"Sorry Your password is incorrect"
@@ -60,6 +64,7 @@ export const login=async(req,res)=>{
         else{
             // if password is correct then check for role.
             let checkrole=JSON.stringify(role)===JSON.stringify(registeredUser.role);
+            console.log("checkrole",checkrole)
             if(!checkrole){
                 return res.status(401).json({
                     "message":"Sorry you have not registered with this role."
@@ -67,7 +72,8 @@ export const login=async(req,res)=>{
             }
             else{
                 let token=jwt.sign({id:registeredUser._id},process.env.JWT_SECRET,{expiresIn:'1h'});
-                return res.status(201).cookie({'token':token}).json({
+                console.log("token",token);
+                return res.status(201).cookie('token',token).json({
                     "message":"Logged in Successfully!!",
                     registeredUser
                 })
@@ -80,6 +86,7 @@ export const login=async(req,res)=>{
 
 export const logout=async(req,res)=>{
     // at this place with the help of cookie we will check whether user is logged in or not at later stage.
+    const {token}=req.cookies;
     if(!token){
         return res.status(401).json({
             "message":"Sorry You need to login first!!"
@@ -105,8 +112,7 @@ export const update=async(req,res)=>{
         name,
         password,
         role
-    })
-    await updatedUser.save();
+    },{new:true})
     return res.status(201).json({
         "message":"User updated Successfully!!",
         updatedUser

@@ -13,5 +13,5 @@ const coursecategorySchema=mongoose.Schema({
     }
 },{timestamps:true})
 
-const courseCategory=mongoose.model(coursecategorySchema,"courseCategory");
+const courseCategory=mongoose.model("courseCategory",coursecategorySchema);
 export default courseCategory;
