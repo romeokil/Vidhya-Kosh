@@ -1,5 +1,5 @@
 import Instructor from "../models/Instructor.js";
-
+import jwt from 'jsonwebtoken';
 //instructor register  
 
 export const register=async(req,res)=>{
@@ -32,13 +32,14 @@ export const register=async(req,res)=>{
 
 export const login=async(req,res)=>{
     const {name,password}=req.body;
-    if(!name || !password || !bio || !rating){
+    if(!name || !password){
         return res.status(401).json({
             "message":"Sorry Missing credentials!!",
         })
     }
     // checked registered user
     const registeredUser=await Instructor.findOne({name});
+    const token=jwt.sign({id:registeredUser._id},process.env.JWT_SECRET,{expiresIn:'1h'});
     if(!registeredUser){
         return res.status(401).json({
             "message":"Sorry No Instructor registered with this name"
@@ -53,7 +54,7 @@ export const login=async(req,res)=>{
             })
         }
         else{
-            return res.status(201).json({
+            return res.status(201).cookie('token',token).json({
                 "message":"Logged in successfully!!",
                 registeredUser
             })
@@ -64,7 +65,13 @@ export const login=async(req,res)=>{
 // instructor logout
 
 export const logout=async(req,res)=>{
-    return res.status(201).json({
+    const {token}=req.cookies;
+    if(!token){
+        return res.status(401).json({
+            "message":"You need to login first!!"
+        })
+    }
+    return res.status(201).cookie('token','').json({
         "message":"Logout Successfully!!"
     })
 }
@@ -84,8 +91,7 @@ export const update=async(req,res)=>{
         password,
         bio,
         rating
-    })
-    await updateInstructor.save();
+    },{new:true})
     return res.status(201).json({
         "message":"Instructor Updated Successfully!!",
         updateInstructor

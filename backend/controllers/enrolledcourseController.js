@@ -3,21 +3,29 @@ import enrolledCourse from "../models/EnrolledCourses.js";
 // checkenrolledCourse controller
 
 export const checkenrolledCourse = async (req, res) => {
-    const { name, course } = req.body;
-    const allenrolledCourse = await enrolledCourse.find({ name });
-    const checkenrolledcourse = allenrolledCourse.map((enrollcourse) => {
-        return JSON.stringify(enrollcourse.toLowerCase()) === JSON.stringify(course.toLowerCase())
+    const courseId = req.params.courseId;
+    const userId = req.params.userId;
+    console.log("courseId", courseId);
+    console.log("userId", userId);
+    const getallenrolledCourse = await enrolledCourse.find({});
+    console.log(getallenrolledCourse);
+    let alreadyEnrolled = getallenrolledCourse.map((enrolledCourse) => {
+        return enrolledCourse.user.toString() === userId && enrolledCourse.course.toString() === courseId;
     })
-    if (checkenrolledcourse) {
-        return res.status(401).json({
-            "message": "Sorry you have already enrolled for this Course"
+    console.log("alreadyEnrolled",alreadyEnrolled);
+    let checkEnrollment=false;
+    alreadyEnrolled.map((item)=>{
+        if(item===true) checkEnrollment=true;
+    })
+    if (checkEnrollment) {
+        return res.status(201).json({
+            "message": "You have already enrolled for this course!!"
         })
-    }
-    else {
+    } else {
         const date = new Date();
         let newenroll = await enrolledCourse.create({
-            name,
-            course,
+            user: userId,
+            course: courseId,
             enrolledAt: date.toLocaleDateString()
         })
         newenroll.save();
@@ -35,16 +43,5 @@ export const getallenrolledCourse = async (req, res) => {
     return res.status(201).json({
         "message": "All enrolled courses retrived!!",
         getallenrolledCourse
-    })
-}
-
-// get course by id (individual course).
-
-export const getcoursebyid = async (req, res) => {
-    const { name } = req.body;
-    const getenrolledCourse = await enrolledCourse.find({ name });
-    return res.status(201).json({
-        "message": "You have enrolled for this courses",
-        getenrolledCourse
     })
 }

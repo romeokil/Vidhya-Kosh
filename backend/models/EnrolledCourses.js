@@ -3,14 +3,14 @@ import mongoose from 'mongoose'
 const enrolledcoursesSchema=mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Users'
+        ref:'users'
     },
     course:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Courses'
+        ref:'courses'
     },
     enrolledAt:{
-        type:Date
+        type:String
     }
 },{timestamps:true});
 
