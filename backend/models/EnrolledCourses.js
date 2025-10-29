@@ -14,5 +14,5 @@ const enrolledcoursesSchema=mongoose.Schema({
     }
 },{timestamps:true});
 
-const enrolledCourse=mongoose.model(enrolledcoursesSchema,"enrolledCourses");
+const enrolledCourse=mongoose.model("enrolledCourses",enrolledcoursesSchema);
 export default enrolledCourse;

@@ -2,8 +2,8 @@ import mongoose from 'mongoose'
 
 const instructorSchema=mongoose.Schema({
     name:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Users'
+        type:String,
+        required:true
     },
     password:{
         type:String,
@@ -19,5 +19,5 @@ const instructorSchema=mongoose.Schema({
     }
 },{timestamps:true})
 
-const Instructor=mongoose.model(instructorSchema,"Instructors");
+const Instructor=mongoose.model("Instructors",instructorSchema);
 export default Instructor;

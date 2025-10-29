@@ -15,5 +15,5 @@ const courseSchema=mongoose.Schema({
     }
 },{timestamps:true})
 
-const Course=mongoose.model(courseSchema,"Courses");
+const Course=mongoose.model("Courses",courseSchema);
 export default Course;

@@ -20,5 +20,5 @@ const userSchema=mongoose.Schema({
     }
 },{timestamps:true})
 
-const User=mongoose.model(userSchema,"Users");
+const User=mongoose.model("Users",userSchema);
 export default User;
