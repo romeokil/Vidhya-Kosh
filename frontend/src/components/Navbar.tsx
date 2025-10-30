@@ -7,14 +7,15 @@ import {
 } from "@/components/ui/sheet"
 // Assuming ModeToggle is your custom component
 import { ModeToggle } from "@/components/mode-toggle"
+import { Link } from "react-router-dom"
 
 export function Navbar() {
   // Define the mobile content as a separate block/component for clarity
   const MobileNavContent = () => (
     <div className="flex flex-col space-y-4 p-4">
       {/* These will be stacked vertically in the Sheet */}
-      <Button className="w-full">Login</Button>
-      <Button className="w-full">Register</Button>
+      <Button asChild className="w-full"><Link to="/checklogin">Login</Link></Button>
+      <Button asChild className="w-full"><Link to="/checkregister">Register</Link></Button>
       
       {/* ModeToggle might need slight styling adjustments inside the sheet */}
       <div className="flex justify-center pt-2">
@@ -35,8 +36,8 @@ export function Navbar() {
       {/* 2. Desktop Navigation (Visible on medium screens and up) */}
       {/* Use 'hidden' on small screens, and 'flex' on 'md' screens (768px and up by default) */}
       <div className="hidden md:flex items-center gap-2">
-        <Button>Login</Button>
-        <Button>Register</Button>
+        <Button asChild><Link to="/checklogin">Login</Link></Button>
+        <Button asChild><Link to="/checkregister">Register</Link></Button>
         <ModeToggle />
       </div>
 
