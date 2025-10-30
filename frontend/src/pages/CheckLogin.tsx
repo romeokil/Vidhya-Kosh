@@ -1,11 +1,18 @@
 import { Button } from '@/components/ui/button'
+import {Link} from 'react-router-dom'
 export default function CheckLogin() {
   return (
     <div className='w-full h-screen flex justify-center items-center'>
         <div className='flex flex-col gap-2'>
-            <Button variant="secondary">With User</Button>
-            <Button variant="secondary">With Instructor</Button>
-            <Button variant="secondary">With Admin</Button>
+            <Button variant="secondary">
+              <Link to="/userlogin">With User</Link>
+            </Button>
+            <Button variant="secondary">
+              <Link to="/instructorlogin">With Instructor</Link>
+            </Button>
+            <Button variant="secondary">
+              <Link to='/checklogin'>With Admin</Link>
+            </Button>
         </div>
     </div>
   )

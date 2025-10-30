@@ -3,6 +3,10 @@ import { Routes, Route } from 'react-router-dom'
 import Home from "./pages/Home"
 import CheckLogin from "./pages/CheckLogin"
 import CheckRegister from "./pages/CheckRegister"
+import UserRegister from "./pages/User/UserRegister"
+import UserLogin from "./pages/User/UserLogin"
+import InstructorRegister from "./pages/Instructor/InstructorRegister"
+import InstructorLogin from "./pages/Instructor/InstructorLogin"
 
 function App() {
   return (
@@ -11,6 +15,10 @@ function App() {
         <Route path='/' element={<Home/>}></Route>
         <Route path='/checklogin' element={<CheckLogin/>}></Route>
         <Route path='/checkregister' element={<CheckRegister/>}></Route>
+        <Route path='/userregister' element={<UserRegister/>}></Route>
+        <Route path='/userlogin' element={<UserLogin/>}></Route>
+        <Route path='/instructorregister' element={<InstructorRegister/>}></Route>
+        <Route path='/instructorlogin' element={<InstructorLogin/>}></Route>
       </Routes>
     </ThemeProvider>
   )
