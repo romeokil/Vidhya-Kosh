@@ -7,11 +7,14 @@ import userRoute from './routes/UserRoute.js';
 import courseRoute from './routes/courseRoute.js';
 import instructorRoute from './routes/instructorRoute.js'
 import enrolledcourseRoute from './routes/enrolledcourseRoute.js'
-
+const corsOption={
+    origin:'http://localhost:5173',
+    credentials:true
+}
 const app=express();
 dotenv.config();
 const PORT=8000;
-app.use(cors());
+app.use(cors(corsOption));
 app.use(express.json());
 app.use(cookieParser());
 app.get('/',(req,res)=>{

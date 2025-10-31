@@ -8,6 +8,7 @@ import UserLogin from "./pages/User/UserLogin"
 import InstructorRegister from "./pages/Instructor/InstructorRegister"
 import InstructorLogin from "./pages/Instructor/InstructorLogin"
 import UserLanding from "./pages/User/UserLanding"
+import InstructorLanding from "./pages/Instructor/InstructorLanding"
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path='/userlanding' element={<UserLanding/>}></Route>
         <Route path='/instructorregister' element={<InstructorRegister/>}></Route>
         <Route path='/instructorlogin' element={<InstructorLogin/>}></Route>
+        <Route path="/instructorlanding" element={<InstructorLanding/>}></Route>
       </Routes>
     </ThemeProvider>
   )

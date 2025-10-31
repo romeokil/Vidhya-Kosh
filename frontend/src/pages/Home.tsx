@@ -6,11 +6,11 @@ import InstructorLanding from './Instructor/InstructorLanding.js'
 function Home() {
   return (
     <>
-        {/* <Navbar/> */}
+        <Navbar/>
         {/* <UserLanding/> */}
         {/* {<CourseDetailPage/>} */}
         {/* {<SeeAllCourses/>} */}
-        <InstructorLanding/>
+        {/* <InstructorLanding/> */}
     </>
   )
 }
