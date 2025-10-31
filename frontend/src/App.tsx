@@ -7,6 +7,7 @@ import UserRegister from "./pages/User/UserRegister"
 import UserLogin from "./pages/User/UserLogin"
 import InstructorRegister from "./pages/Instructor/InstructorRegister"
 import InstructorLogin from "./pages/Instructor/InstructorLogin"
+import UserLanding from "./pages/User/UserLanding"
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/checkregister' element={<CheckRegister/>}></Route>
         <Route path='/userregister' element={<UserRegister/>}></Route>
         <Route path='/userlogin' element={<UserLogin/>}></Route>
+        <Route path='/userlanding' element={<UserLanding/>}></Route>
         <Route path='/instructorregister' element={<InstructorRegister/>}></Route>
         <Route path='/instructorlogin' element={<InstructorLogin/>}></Route>
       </Routes>
