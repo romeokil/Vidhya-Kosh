@@ -81,7 +81,14 @@ export function Navbar() {
 
           ) : (
             <>
-              <Button asChild className="w-full"><Link to="/checklogin">Profile</Link></Button>
+            {
+              activeUser.role==="User"?(
+                <Button asChild className="w-full"><Link to="/userprofile">Profile</Link></Button>
+              ):(
+                <Button asChild className="w-full"><Link to="/instructorprofile">Profile</Link></Button>
+              )
+            }
+              
               <Button onClick={HandleLogout} className="w-full">Logout</Button>
               {
                 activeUser.role === "User" ? (
@@ -127,13 +134,20 @@ export function Navbar() {
         !activeUser ?
           (
             <>
-              <Button asChild className="w-full"><Link to="/checklogin">Login</Link></Button>
-              <Button asChild className="w-full"><Link to="/checkregister">Register</Link></Button>
+              <Button asChild><Link to="/checklogin">Login</Link></Button>
+              <Button asChild><Link to="/checkregister">Register</Link></Button>
             </>
 
           ) : (
             <>
-              <Button asChild><Link to="/checklogin">Profile</Link></Button>
+            {
+              activeUser.role==="User"?(
+                <Button asChild><Link to="/userprofile">Profile</Link></Button>  
+              ):
+              (
+                <Button asChild><Link to="/instructorprofile">Profile</Link></Button>
+              )
+            }
               <Button onClick={HandleLogout}>Logout</Button>
               {
                 activeUser.role === "User" ? (
