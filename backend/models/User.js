@@ -11,7 +11,7 @@ const userSchema=mongoose.Schema({
     },
     role:{
         type:String,
-        enum:['User','Instructor','Admin'],
+        default:'User',
         required:true
     },
     profile_picture:{

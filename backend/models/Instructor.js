@@ -16,6 +16,10 @@ const instructorSchema=mongoose.Schema({
     rating:{
         type:Number,
         required:true
+    },
+    role:{
+        type:String,
+        default:"Instructor"
     }
 },{timestamps:true})
 
