@@ -114,8 +114,38 @@ export function Navbar() {
       {/* 2. Desktop Navigation (Visible on medium screens and up) */}
       {/* Use 'hidden' on small screens, and 'flex' on 'md' screens (768px and up by default) */}
       <div className="hidden md:flex items-center gap-2">
-        <Button asChild><Link to="/checklogin">Login</Link></Button>
-        <Button asChild><Link to="/checkregister">Register</Link></Button>
+        {alert && (
+                    <Alert variant={alert.variant} className="mb-4">
+                        {/* Use an icon for visual impact */}
+                        {alert.variant === 'destructive' ? <AlertTriangle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                        <AlertTitle>{alert.title}</AlertTitle>
+                        <AlertDescription>{alert.description}</AlertDescription>
+                    </Alert>
+                )}
+      {/* These will be stacked vertically in the Sheet */}
+      {
+        !activeUser ?
+          (
+            <>
+              <Button asChild className="w-full"><Link to="/checklogin">Login</Link></Button>
+              <Button asChild className="w-full"><Link to="/checkregister">Register</Link></Button>
+            </>
+
+          ) : (
+            <>
+              <Button asChild><Link to="/checklogin">Profile</Link></Button>
+              <Button onClick={HandleLogout}>Logout</Button>
+              {
+                activeUser.role === "User" ? (
+                  <Button asChild><Link to="/checklogin">Enrolled Course</Link></Button>
+                ) :
+                  (
+                    <Button asChild><Link to="/checklogin">Create Course</Link></Button>
+                  )
+              }
+              <Button asChild><Link to="/seeallcourses">See All Courses</Link></Button>
+            </>
+          )}
         <ModeToggle />
       </div>
 
