@@ -9,6 +9,7 @@ import InstructorRegister from "./pages/Instructor/InstructorRegister"
 import InstructorLogin from "./pages/Instructor/InstructorLogin"
 import UserLanding from "./pages/User/UserLanding"
 import InstructorLanding from "./pages/Instructor/InstructorLanding"
+import SeeAllCourses from "./pages/SeeAllCourses"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/instructorregister' element={<InstructorRegister/>}></Route>
         <Route path='/instructorlogin' element={<InstructorLogin/>}></Route>
         <Route path="/instructorlanding" element={<InstructorLanding/>}></Route>
+        <Route path="/seeallcourses" element={<SeeAllCourses/>}></Route>
       </Routes>
     </ThemeProvider>
   )

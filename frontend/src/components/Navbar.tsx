@@ -1,6 +1,11 @@
-import { useSelector } from "react-redux";
+import {useState} from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector,useDispatch } from "react-redux";
+import { logout } from '@/redux/authSlice.ts';
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react" // Import the hamburger icon
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertTriangle, CheckCircle } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -11,11 +16,60 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { Link } from "react-router-dom"
 
 export function Navbar() {
+  const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const [alert,setalert]=useState(null);
   const activeUser = useSelector((state) => state.auth.activeUser);
-  console.log("activeUser ka role", activeUser.role);
+  console.log("activeUser ka role", activeUser?.role);
+  const role = (activeUser?.role)?.toLowerCase();
+  const HandleLogout = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/${role}/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'Application/JSON'
+        },
+        credentials: 'include'
+      })
+      const data=await response.json();
+      if(response.ok){
+        dispatch(logout(''));
+        navigate('/');
+        setalert({
+          variant:"default",
+          title:"Success!!",
+          description:data.message
+        })
+
+      }
+      else{
+        setalert({
+          variant:"destructive",
+          title:"Failure",
+          description:data.message
+        })
+      }
+  }
+  catch(error){
+    setalert({
+      variant:"destructive",
+      title:"Failure",
+      description:"Unkown Error happened!!"
+    })
+    console.log(`Error while ${role} logout`,error);
+  }
+}
   // Define the mobile content as a separate block/component for clarity
   const MobileNavContent = () => (
     <div className="flex flex-col space-y-4 p-4">
+      {alert && (
+                    <Alert variant={alert.variant} className="mb-4">
+                        {/* Use an icon for visual impact */}
+                        {alert.variant === 'destructive' ? <AlertTriangle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                        <AlertTitle>{alert.title}</AlertTitle>
+                        <AlertDescription>{alert.description}</AlertDescription>
+                    </Alert>
+                )}
       {/* These will be stacked vertically in the Sheet */}
       {
         !activeUser ?
@@ -27,17 +81,17 @@ export function Navbar() {
 
           ) : (
             <>
-                  <Button asChild className="w-full"><Link to="/checklogin">Profile</Link></Button>
-                  <Button asChild className="w-full"><Link to="/checkregister">Logout</Link></Button>
-                  {
-                    activeUser.role==="User"?(
-                      <Button asChild className="w-full"><Link to="/checklogin">Enrolled Course</Link></Button>
-                    ):
-                    (
-                      <Button asChild className="w-full"><Link to="/checklogin">Create Course</Link></Button>
-                    )
-                  }
-                  <Button asChild className="w-full"><Link to="/checkregister">See All Courses</Link></Button>
+              <Button asChild className="w-full"><Link to="/checklogin">Profile</Link></Button>
+              <Button onClick={HandleLogout} className="w-full">Logout</Button>
+              {
+                activeUser.role === "User" ? (
+                  <Button asChild className="w-full"><Link to="/checklogin">Enrolled Course</Link></Button>
+                ) :
+                  (
+                    <Button asChild className="w-full"><Link to="/checklogin">Create Course</Link></Button>
+                  )
+              }
+              <Button asChild className="w-full"><Link to="/seeallcourses">See All Courses</Link></Button>
             </>
           )}
 
