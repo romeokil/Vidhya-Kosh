@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react" // Import the hamburger icon
 import {
@@ -10,13 +11,36 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { Link } from "react-router-dom"
 
 export function Navbar() {
+  const activeUser = useSelector((state) => state.auth.activeUser);
+  console.log("activeUser ka role", activeUser.role);
   // Define the mobile content as a separate block/component for clarity
   const MobileNavContent = () => (
     <div className="flex flex-col space-y-4 p-4">
       {/* These will be stacked vertically in the Sheet */}
-      <Button asChild className="w-full"><Link to="/checklogin">Login</Link></Button>
-      <Button asChild className="w-full"><Link to="/checkregister">Register</Link></Button>
-      
+      {
+        !activeUser ?
+          (
+            <>
+              <Button asChild className="w-full"><Link to="/checklogin">Login</Link></Button>
+              <Button asChild className="w-full"><Link to="/checkregister">Register</Link></Button>
+            </>
+
+          ) : (
+            <>
+                  <Button asChild className="w-full"><Link to="/checklogin">Profile</Link></Button>
+                  <Button asChild className="w-full"><Link to="/checkregister">Logout</Link></Button>
+                  {
+                    activeUser.role==="User"?(
+                      <Button asChild className="w-full"><Link to="/checklogin">Enrolled Course</Link></Button>
+                    ):
+                    (
+                      <Button asChild className="w-full"><Link to="/checklogin">Create Course</Link></Button>
+                    )
+                  }
+                  <Button asChild className="w-full"><Link to="/checkregister">See All Courses</Link></Button>
+            </>
+          )}
+
       {/* ModeToggle might need slight styling adjustments inside the sheet */}
       <div className="flex justify-center pt-2">
         <ModeToggle />
@@ -27,7 +51,7 @@ export function Navbar() {
   return (
     // Outer container for the Navbar
     <nav className="flex justify-between items-center h-16 px-4 border-b">
-      
+
       {/* 1. App Name/Logo (Always visible) */}
       <div className="text-xl font-bold dark:text-white text-black">
         Vidhya-Kosh
@@ -52,7 +76,7 @@ export function Navbar() {
               <span className="sr-only">Toggle menu</span>
             </Button>
           </SheetTrigger>
-          
+
           {/* SheetContent is the Dialogue Box that slides in */}
           {/* side="right" makes it slide from the right side, typical for mobile menus */}
           <SheetContent side="right" className="w-[250px] sm:w-[300px] p-0">
