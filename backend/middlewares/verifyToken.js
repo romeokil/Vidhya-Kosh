@@ -16,7 +16,7 @@ const verifyToken=async(req,res,next)=>{
                 })
             }
             req.id=decoded.id;
-            console.log("Verify token middleware Passed!!")
+            console.log("Verify token middleware Passed!!");
             next();
         }
         catch(error){

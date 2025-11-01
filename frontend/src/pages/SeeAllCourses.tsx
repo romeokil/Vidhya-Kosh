@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
 import CourseGrid from './CourseGrid'; 
+import { useSelector } from 'react-redux';
 
 // Dummy Data (moved inside the component for brevity, but can be imported)
 const initialCourses = [
@@ -12,6 +16,8 @@ const initialCourses = [
 ];
 
 export default function SeeAllCourses() {
+    const activeUser=useSelector((state)=>state.auth.activeUser);
+    const navigate=useNavigate();
     const [priceFilter, setPriceFilter] = useState({ min: 0, max: 500 });
     const [filteredCourses, setFilteredCourses] = useState(initialCourses);
 
@@ -32,6 +38,16 @@ export default function SeeAllCourses() {
         setFilteredCourses(results);
     };
 
+
+    const handleGoBack=()=>{
+        if(activeUser.role==="User"){
+            navigate('/userlanding');
+        }
+        else{
+            navigate('/instructorlanding');
+        }
+    }
+
     useEffect(() => {
         setFilteredCourses(initialCourses);
         
@@ -48,10 +64,19 @@ export default function SeeAllCourses() {
             
             <div className='max-w-7xl mx-auto p-4 sm:p-6 lg:p-8'>
                 
-
-                <h1 className='text-center font-extrabold text-indigo-600 dark:text-indigo-400 text-4xl sm:text-5xl mb-10'>
-                    Our Courses
-                </h1>
+                <div className="flex flex-wrap gap-2 justify-between items-center mb-6">
+                    <Button
+                        variant="outline"
+                        onClick={handleGoBack}
+                        className="flex items-center gap-2 text-gray-700 dark:text-gray-200 transition-colors"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Dashboard
+                    </Button>
+                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+                        See All courses
+                    </h1>
+                </div>
                 
                 {/* ----------- MAIN LAYOUT: Filter on Left, Courses on Right ----------- */}
                 <div className="flex flex-col lg:flex-row gap-8">

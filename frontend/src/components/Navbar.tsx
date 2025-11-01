@@ -95,7 +95,7 @@ export function Navbar() {
                   <Button asChild className="w-full"><Link to="/checklogin">Enrolled Course</Link></Button>
                 ) :
                   (
-                    <Button asChild className="w-full"><Link to="/checklogin">Create Course</Link></Button>
+                    <Button asChild className="w-full"><Link to="/createcourse">Create Course</Link></Button>
                   )
               }
               <Button asChild className="w-full"><Link to="/seeallcourses">See All Courses</Link></Button>
@@ -154,7 +154,7 @@ export function Navbar() {
                   <Button asChild><Link to="/checklogin">Enrolled Course</Link></Button>
                 ) :
                   (
-                    <Button asChild><Link to="/checklogin">Create Course</Link></Button>
+                    <Button asChild><Link to="/createcourse">Create Course</Link></Button>
                   )
               }
               <Button asChild><Link to="/seeallcourses">See All Courses</Link></Button>

@@ -12,6 +12,7 @@ import InstructorLanding from "./pages/Instructor/InstructorLanding"
 import SeeAllCourses from "./pages/SeeAllCourses"
 import { UserProfile } from "./pages/User/UserProfile"
 import { InstructorProfile } from "./pages/Instructor/InstructorProfile"
+import { CreateCourse } from "./pages/Instructor/Createcourse"
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path='/instructorlogin' element={<InstructorLogin/>}></Route>
         <Route path="/instructorlanding" element={<InstructorLanding/>}></Route>
         <Route path="/instructorprofile" element={<InstructorProfile/>}></Route>
+        <Route path='/createcourse' element={<CreateCourse/>}></Route>
         <Route path="/seeallcourses" element={<SeeAllCourses/>}></Route>
       </Routes>
     </ThemeProvider>

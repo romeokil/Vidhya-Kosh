@@ -1,6 +1,5 @@
 import express from 'express'
 import { register,update,getallcourse,deletecourse } from '../controllers/courseController.js'
-
 const router=express.Router();
 
 router.post('/register',register);

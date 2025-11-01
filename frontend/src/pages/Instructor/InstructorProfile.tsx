@@ -52,7 +52,7 @@ export function InstructorProfile() {
             <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 
                 {/* Header Row: Back Button and Page Title */}
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-wrap gap-2 justify-between items-center mb-6">
                     <Button 
                         variant="outline" 
                         onClick={handleGoBack} 

@@ -3,7 +3,7 @@ import Course from "../models/Course.js";
 // register course
 
 export const register=async(req,res)=>{
-    const {name,description,price}=req.body;
+    const {name,description,price,rating,instructorId}=req.body;
     if(!name || !description || !price){
         return res.status(201).json({
             "message":"Sorry Missing credentials!!"
@@ -19,7 +19,9 @@ export const register=async(req,res)=>{
         const registerCourse=await Course.create({
             name,
             description,
-            price
+            price,
+            rating,
+            author:instructorId
         })
         registerCourse.save();
         return res.status(201).json({
