@@ -1,11 +1,14 @@
 import { useState } from "react"
 import {Link,useNavigate} from 'react-router-dom'
+import {useDispatch} from 'react-redux';
+import {login} from '@/redux/authSlice.ts'
 import { Input } from "@/components/ui/input"
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 export default function UserLogin() {
     const navigate=useNavigate();
+    const dispatch=useDispatch();
     const [name, setname] = useState('');
     const [password, setpassword] = useState('');
     const [alert, setalert] = useState(null);
@@ -30,6 +33,7 @@ export default function UserLogin() {
                     title: "Success!!",
                     description: data.message
                 })
+                dispatch(login(data.registeredUser));
                 navigate('/userlanding')
             }
             else {
