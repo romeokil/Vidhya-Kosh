@@ -3,11 +3,11 @@ import mongoose from 'mongoose'
 const enrolledcoursesSchema=mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'users'
+        ref:'Users'
     },
     course:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'courses'
+        ref:'Courses'
     },
     enrolledAt:{
         type:String
