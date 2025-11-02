@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 // Assuming you are using TypeScript/React for structure
 interface Course {
   id: number;
@@ -7,7 +8,7 @@ interface Course {
   imageUrl: string;
 }
 
-const CourseCard = ({ name, description, price, imageUrl }: Course) => {
+const CourseCard = ({_id,name, description, price, imageUrl }: Course) => {
   return (
     // Card Container: rounded corners, shadow, white background, overflow hidden
     // The 'h-full' and 'flex flex-col' ensure all cards in the grid have the same height.
@@ -35,7 +36,7 @@ const CourseCard = ({ name, description, price, imageUrl }: Course) => {
             ${price}
           </span>
           <button className="bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
-            Enroll Now
+          <Link to={`/coursedetail/${_id}`}>Detail</Link>
           </button>
         </div>
       </div>

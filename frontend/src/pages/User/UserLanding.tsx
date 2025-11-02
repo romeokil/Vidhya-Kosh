@@ -1,8 +1,20 @@
 import { Navbar } from '@/components/Navbar'
-import React from 'react'
+import { useEffect } from 'react'
 import CourseGrid from '../CourseGrid'
-
+import { setallcourses } from '@/redux/courseSlice.ts'
+import { useSelector,useDispatch } from 'react-redux'
 export default function UserLanding() {
+    const dispatch=useDispatch();
+    const allcourses=useSelector((state)=>state.course.allcourses);
+    useEffect(()=>{
+        async function getallcourses(){
+            const response=await fetch('http://localhost:8000/api/course/getallcourse');
+            const data=await response.json();
+            console.log("data",data.getallCourses);
+            dispatch(setallcourses(data.getallCourses));
+        }
+        getallcourses();
+    },[dispatch])
     return (
         <>
             {/* this must consist of dark mode and light mode ,user profile ,logout user enrolled course , see all courses. */}
@@ -18,7 +30,15 @@ export default function UserLanding() {
                 <div>
                     <h1 className='text-left pl-8 text-red-300 font-semibold text-3xl '>Recent Published Courses</h1>
                     <div>
-                        <CourseGrid />
+                        {
+                            allcourses && allcourses.length>0?(
+                                <CourseGrid courses={allcourses}/>
+                            ):(
+                                <>
+                                    <h1>Courses ni hai bhai!</h1>
+                                </>
+                            )
+                        }
                     </div>
                 </div>
             </div>

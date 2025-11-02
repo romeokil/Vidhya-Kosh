@@ -92,7 +92,7 @@ export function Navbar() {
               <Button onClick={HandleLogout} className="w-full">Logout</Button>
               {
                 activeUser.role === "User" ? (
-                  <Button asChild className="w-full"><Link to="/checklogin">Enrolled Course</Link></Button>
+                  <Button asChild className="w-full"><Link to="/userenrolled">Enrolled Course</Link></Button>
                 ) :
                   (
                     <Button asChild className="w-full"><Link to="/createcourse">Create Course</Link></Button>
@@ -151,7 +151,7 @@ export function Navbar() {
               <Button onClick={HandleLogout}>Logout</Button>
               {
                 activeUser.role === "User" ? (
-                  <Button asChild><Link to="/checklogin">Enrolled Course</Link></Button>
+                  <Button asChild><Link to="/userenrolled">Enrolled Course</Link></Button>
                 ) :
                   (
                     <Button asChild><Link to="/createcourse">Create Course</Link></Button>

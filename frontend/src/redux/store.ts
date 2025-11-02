@@ -2,9 +2,11 @@ import { combineReducers,configureStore } from "@reduxjs/toolkit";
 import {persistReducer,persistStore} from 'redux-persist';
 import storage from 'redux-persist/lib/storage'
 import authReducer from './authSlice.ts'
+import courseReducer from './courseSlice.ts'
 
 const rootReducer=combineReducers({
     auth:authReducer,
+    course:courseReducer
 });
 const persistConfig={
     key:'root',

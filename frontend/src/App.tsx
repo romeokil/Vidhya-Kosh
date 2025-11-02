@@ -13,6 +13,8 @@ import SeeAllCourses from "./pages/SeeAllCourses"
 import { UserProfile } from "./pages/User/UserProfile"
 import { InstructorProfile } from "./pages/Instructor/InstructorProfile"
 import { CreateCourse } from "./pages/Instructor/Createcourse"
+import UserEnrolled from "./pages/User/UserEnrolled"
+import CourseDetailPage from "./pages/CourseDetailPage"
 
 function App() {
   return (
@@ -25,12 +27,14 @@ function App() {
         <Route path='/userlogin' element={<UserLogin/>}></Route>
         <Route path='/userlanding' element={<UserLanding/>}></Route>
         <Route path='/userprofile' element={<UserProfile/>}></Route>
+        <Route path='/userenrolled' element={<UserEnrolled/>}></Route>
         <Route path='/instructorregister' element={<InstructorRegister/>}></Route>
         <Route path='/instructorlogin' element={<InstructorLogin/>}></Route>
         <Route path="/instructorlanding" element={<InstructorLanding/>}></Route>
         <Route path="/instructorprofile" element={<InstructorProfile/>}></Route>
         <Route path='/createcourse' element={<CreateCourse/>}></Route>
         <Route path="/seeallcourses" element={<SeeAllCourses/>}></Route>
+        <Route path="/coursedetail/:id" element={<CourseDetailPage/>}></Route>
       </Routes>
     </ThemeProvider>
   )

@@ -6,21 +6,12 @@ import { ArrowLeft } from 'lucide-react';
 import CourseGrid from './CourseGrid'; 
 import { useSelector } from 'react-redux';
 
-// Dummy Data (moved inside the component for brevity, but can be imported)
-const initialCourses = [
-    { id: 1, name: "React Basics", price: 199, imageUrl: "/images/c1.jpg" },
-    { id: 2, name: "Advanced Node.js", price: 349, imageUrl: "/images/c2.jpg" },
-    { id: 3, name: "Tailwind UI/UX", price: 99, imageUrl: "/images/c3.jpg" },
-    { id: 4, name: "Data Structures", price: 249, imageUrl: "/images/c4.jpg" },
-    { id: 5, name: "Python for Data Science", price: 499, imageUrl: "/images/c5.jpg" },
-];
-
 export default function SeeAllCourses() {
+    const initialCourses=useSelector((state)=>state.course.allcourses);
     const activeUser=useSelector((state)=>state.auth.activeUser);
     const navigate=useNavigate();
     const [priceFilter, setPriceFilter] = useState({ min: 0, max: 500 });
     const [filteredCourses, setFilteredCourses] = useState(initialCourses);
-
     const handlePriceChange = (e) => {
         setPriceFilter({
             ...priceFilter,
