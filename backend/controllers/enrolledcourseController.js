@@ -1,3 +1,4 @@
+import { get } from "mongoose";
 import enrolledCourse from "../models/EnrolledCourses.js";
 
 // checkenrolledCourse controller
@@ -32,6 +33,27 @@ export const checkenrolledCourse = async (req, res) => {
         return res.status(201).json({
             "message": "Congrats You have enrolled for this course",
             newenroll
+        })
+    }
+}
+
+// get user enrolled course
+
+export const userenrolledCourse=async(req,res)=>{
+    const userId=req.params.id;
+    const getuserenrolledCourse=await enrolledCourse.find({
+        user:userId
+    })
+    .populate('course');
+    if(!getuserenrolledCourse || getuserenrolledCourse.length==0){
+        return res.status(401).json({
+            "message":"Sorry You haven't enrolled for any course yet."
+        })
+    }
+    else{
+        return res.status(201).json({
+            "message":"Successfully Retrieved Courses",
+            getuserenrolledCourse
         })
     }
 }
