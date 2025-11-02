@@ -31,6 +31,31 @@ export const register=async(req,res)=>{
     }
 }
 
+// get single course
+
+export const getcoursebyid=async(req,res)=>{
+    const courseId=req.params.courseId;
+    console.log("single course id",courseId);
+    const singlecourse=await Course.findById(courseId)
+    .populate({
+        path:'author',
+        model:'Instructors'
+    });
+    if(!singlecourse){
+        return res.status(401).json({
+            "message":"Sorry This course doesnot exist"
+        })
+    }
+    else{
+        return res.status(201).json({
+            "message":"Yes this Course exist !!",
+            singlecourse
+        })
+    }
+}
+
+
+
 // get all course
 
 export const getallcourse=async(req,res)=>{

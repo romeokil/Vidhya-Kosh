@@ -44,7 +44,13 @@ export const userenrolledCourse=async(req,res)=>{
     const getuserenrolledCourse=await enrolledCourse.find({
         user:userId
     })
-    .populate('course');
+    .populate({
+        path:'course',
+        populate:{
+            path:'author',
+            model:'Instructors'
+        }
+    });
     if(!getuserenrolledCourse || getuserenrolledCourse.length==0){
         return res.status(401).json({
             "message":"Sorry You haven't enrolled for any course yet."
