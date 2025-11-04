@@ -100,22 +100,21 @@ export const logout=async(req,res)=>{
 // update profile
 
 export const update=async(req,res)=>{
-    const {name,password,role}=req.body;
+    const userId=req.params.id;
+    const {name,password}=req.body;
     // first check user is logged in or not using jwt we will write at later stage.
-    const usertobeUpdated=await User.findOne({name});
+    const usertobeUpdated=await User.findByIdAndUpdate(userId,{
+        name,
+        password
+    },{new:true})  
     if(!usertobeUpdated){
         return res.status(401).json({
             "message":"Sorry No record find with this name."
         })
     }
-    const updatedUser=await usertobeUpdated.updateOne({
-        name,
-        password,
-        role
-    },{new:true})
     return res.status(201).json({
         "message":"User updated Successfully!!",
-        updatedUser
-    })
+        usertobeUpdated
+        })
 
 }
