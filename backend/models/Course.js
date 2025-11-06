@@ -19,9 +19,12 @@ const courseSchema=mongoose.Schema({
     },
     author:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Users'
+        ref:'Instructors',
+        required:true
     }
 },{timestamps:true})
+
+courseSchema.index({ name: 1, author: 1 }, { unique: true });
 
 const Course=mongoose.model("Courses",courseSchema);
 export default Course;

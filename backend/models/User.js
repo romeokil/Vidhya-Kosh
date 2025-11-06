@@ -14,6 +14,10 @@ const userSchema=mongoose.Schema({
         default:'User',
         required:true
     },
+    enrolledCourses:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Courses'
+    }],
     profile_picture:{
         type:String,
         default:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/500px-Unknown_person.jpg"

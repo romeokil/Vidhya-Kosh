@@ -20,7 +20,11 @@ const instructorSchema=mongoose.Schema({
     role:{
         type:String,
         default:"Instructor"
-    }
+    },
+    publishedcourses:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Courses'
+    }]
 },{timestamps:true})
 
 const Instructor=mongoose.model("Instructors",instructorSchema);
