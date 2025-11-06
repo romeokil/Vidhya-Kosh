@@ -38,7 +38,8 @@ export const login=async(req,res)=>{
         })
     }
     // checked registered user
-    const registeredUser=await Instructor.findOne({name});
+    let registeredUser=await Instructor.findOne({name});
+    registeredUser=await registeredUser.populate('publishedcourses');
     const token=jwt.sign({id:registeredUser._id},process.env.JWT_SECRET,{expiresIn:'1h'});
     if(!registeredUser){
         return res.status(401).json({

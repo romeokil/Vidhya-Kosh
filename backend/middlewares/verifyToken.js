@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 const verifyToken=async(req,res,next)=>{
-    let {token}=req.cookie;
+    let {token}=req.cookies;
     if(!token){
         return res.status(401).json({
             "message":"Sorry You need to Login First!!"

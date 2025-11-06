@@ -1,29 +1,43 @@
 import Course from "../models/Course.js";
-
+import Instructor from "../models/Instructor.js";
 // register course
 
 export const register=async(req,res)=>{
-    const {name,description,price,rating,instructorId}=req.body;
+    const userId=req.id;
+    console.log("instructor ka userId hai ye",userId);
+    const {name,description,price,rating}=req.body;
     if(!name || !description || !price){
         return res.status(201).json({
             "message":"Sorry Missing credentials!!"
         })
     }
-    const alreadyregisteredCourse=await Course.findOne({name});
+    const alreadyregisteredCourse=await Course.findOne({
+        name:name,
+        author:userId
+    })
+    const instructor=await Instructor.findById(userId);
+    console.log(instructor);
+    if(!instructor){
+        return res.status(401).json({
+            "message":"Sorry Instructor Not Found!!"
+        })
+    }
     if(alreadyregisteredCourse){
-        return res.status(201).json({
+        return res.status(401).json({
             "message":"Course with this name is already registered!!"
         })
     }
     else{
-        const registerCourse=await Course.create({
+        let registerCourse=await Course.create({
             name,
             description,
             price,
             rating,
-            author:instructorId
+            author:userId
         })
-        registerCourse.save();
+        registerCourse=await registerCourse.populate('author');
+        instructor.publishedcourses.push(registerCourse._id);
+        instructor.save();
         return res.status(201).json({
             "message":"Course Successfully Registered!!",
             registerCourse

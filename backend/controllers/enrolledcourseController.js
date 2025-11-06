@@ -1,5 +1,6 @@
 import { get } from "mongoose";
 import enrolledCourse from "../models/EnrolledCourses.js";
+import User from "../models/User.js";
 
 // checkenrolledCourse controller
 
@@ -9,6 +10,7 @@ export const checkenrolledCourse = async (req, res) => {
     console.log("courseId", courseId);
     console.log("userId", userId);
     const getallenrolledCourse = await enrolledCourse.find({});
+    const user=await User.findById({userId});
     console.log(getallenrolledCourse);
     let alreadyEnrolled = getallenrolledCourse.map((enrolledCourse) => {
         return enrolledCourse.user.toString() === userId && enrolledCourse.course.toString() === courseId;
@@ -30,6 +32,7 @@ export const checkenrolledCourse = async (req, res) => {
             enrolledAt: date.toLocaleDateString()
         })
         newenroll.save();
+        user.enrolledCourses.push(newenroll._id);
         return res.status(201).json({
             "message": "Congrats You have enrolled for this course",
             newenroll
@@ -57,6 +60,7 @@ export const userenrolledCourse=async(req,res)=>{
         })
     }
     else{
+        
         return res.status(201).json({
             "message":"Successfully Retrieved Courses",
             getuserenrolledCourse
