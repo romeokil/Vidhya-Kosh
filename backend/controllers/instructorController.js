@@ -39,7 +39,7 @@ export const login=async(req,res)=>{
     }
     // checked registered user
     let registeredUser=await Instructor.findOne({name});
-    registeredUser=await registeredUser.populate('publishedcourses');
+    if(registeredUser) registeredUser=await registeredUser.populate('publishedcourses');
     const token=jwt.sign({id:registeredUser._id},process.env.JWT_SECRET,{expiresIn:'1h'});
     if(!registeredUser){
         return res.status(401).json({
@@ -80,21 +80,22 @@ export const logout=async(req,res)=>{
 // update instructor
 
 export const update=async(req,res)=>{
+    const instructorId=req.params.id;
     const {name,password,bio,rating}=req.body;
-    const findInstructor=await Instructor.findOne({name});
+    const findInstructor=await Instructor.findByIdAndUpdate(instructorId,{
+        name,
+        password,
+        bio,
+        rating
+    },{new:true});
     if(!findInstructor){
         return res.status(201).json({
             "message":"Couldn't able to find Instructor"
         })
     }
-    const updateInstructor=await findInstructor.updateOne({
-        name,
-        password,
-        bio,
-        rating
-    },{new:true})
+    const updateduser=await findInstructor.populate('publishedcourses');
     return res.status(201).json({
         "message":"Instructor Updated Successfully!!",
-        updateInstructor
+        updateduser
     })
 }

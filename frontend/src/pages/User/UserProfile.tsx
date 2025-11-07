@@ -1,6 +1,6 @@
 import { useState } from 'react'; // Import useState
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Briefcase, Camera, Edit } from 'lucide-react';
+import { ArrowLeft, User, Briefcase, Camera} from 'lucide-react';
 import { useSelector,useDispatch } from 'react-redux';
 import { update } from '@/redux/authSlice.ts';
 
@@ -28,7 +28,7 @@ import { Navbar } from '../../components/Navbar.tsx'; // Adjust path as needed
 
 
 // --- NEW: Dedicated Component for the Editable Form ---
-const EditProfileDialog = ({ user, activeUser, setIsDialogOpen ,setParentAlert}) => {
+const EditProfileDialog = ({activeUser, setIsDialogOpen ,setParentAlert}) => {
     const dispatch=useDispatch();
     // Local state to manage form inputs, initialized with activeUser data
     const [formData, setFormData] = useState({
@@ -192,7 +192,6 @@ export function UserProfile() {
                                 <DialogContent className="sm:max-w-[425px]">
                                     {/* Render the controlled form component here */}
                                     <EditProfileDialog
-                                        user={user}
                                         activeUser={activeUser}
                                         setIsDialogOpen={setIsDialogOpen} 
                                         setParentAlert={setAlert}// Pass state setter to close dialog
