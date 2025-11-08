@@ -4,72 +4,77 @@ import getDataUri from "../utils/datauri.js"
 import cloudinary from "../utils/cloudinary.js";
 // register course
 
-export const register=async(req,res)=>{
-    const userId=req.id;
-    console.log("instructor ka userId hai ye",userId);
-    const {name,description,price,rating}=req.body;
-    const file=req?.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo= cloudResponse.secure_url;
-    if(!name || !description || !price){
+export const register = async (req, res) => {
+    const userId = req.id;
+    console.log("instructor ka userId hai ye", userId);
+    const { name, description, price, rating } = req.body;
+    const file = req?.file;
+    let logo = null;
+    if (file) {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        logo = cloudResponse.secure_url;
+    }
+    if (!name || !description || !price) {
         return res.status(201).json({
-            "message":"Sorry Missing credentials!!"
+            "message": "Sorry Missing credentials!!"
         })
     }
-    const alreadyregisteredCourse=await Course.findOne({
-        name:name,
-        author:userId
+    const alreadyregisteredCourse = await Course.findOne({
+        name: name,
+        author: userId
     })
-    const instructor=await Instructor.findById(userId);
+    const instructor = await Instructor.findById(userId);
     console.log(instructor);
-    if(!instructor){
+    if (!instructor) {
         return res.status(401).json({
-            "message":"Sorry Instructor Not Found!!"
+            "message": "Sorry Instructor Not Found!!"
         })
     }
-    if(alreadyregisteredCourse){
+    if (alreadyregisteredCourse) {
         return res.status(401).json({
-            "message":"Course with this name is already registered!!"
+            "message": "Course with this name is already registered!!"
         })
     }
-    else{
-        let registerCourse=await Course.create({
+    else {
+        let registerCourse = await Course.create({
             name,
             description,
             price,
             rating,
             logo,
-            author:userId
+            author: userId
         })
-        registerCourse=await registerCourse.populate('author');
+        registerCourse = await registerCourse.populate('author');
         instructor.publishedcourses.push(registerCourse._id);
-        instructor.save();
+        const newinstructor=await instructor.populate('publishedcourses');
+        const updatedinstructor=await newinstructor.save();
         return res.status(201).json({
-            "message":"Course Successfully Registered!!",
-            registerCourse
+            "message": "Course Successfully Registered!!",
+            registerCourse,
+            updatedinstructor
         })
     }
 }
 
 // get single course
 
-export const getcoursebyid=async(req,res)=>{
-    const courseId=req.params.courseId;
-    console.log("single course id",courseId);
-    const singlecourse=await Course.findById(courseId)
-    .populate({
-        path:'author',
-        model:'Instructors'
-    });
-    if(!singlecourse){
+export const getcoursebyid = async (req, res) => {
+    const courseId = req.params.courseId;
+    console.log("single course id", courseId);
+    const singlecourse = await Course.findById(courseId)
+        .populate({
+            path: 'author',
+            model: 'Instructors'
+        });
+    if (!singlecourse) {
         return res.status(401).json({
-            "message":"Sorry This course doesnot exist"
+            "message": "Sorry This course doesnot exist"
         })
     }
-    else{
+    else {
         return res.status(201).json({
-            "message":"Yes this Course exist !!",
+            "message": "Yes this Course exist !!",
             singlecourse
         })
     }
@@ -79,16 +84,16 @@ export const getcoursebyid=async(req,res)=>{
 
 // get all course
 
-export const getallcourse=async(req,res)=>{
-    const getallCourses=await Course.find({});
-    if(!getallCourses){
+export const getallcourse = async (req, res) => {
+    const getallCourses = await Course.find({});
+    if (!getallCourses) {
         return res.status(401).json({
-            "message":"Sorry Till now No course Registered!!",
+            "message": "Sorry Till now No course Registered!!",
         })
     }
-    else{
+    else {
         return res.status(201).json({
-            "message":"All Courses retrieved!!",
+            "message": "All Courses retrieved!!",
             getallCourses
         })
     }
@@ -96,44 +101,47 @@ export const getallcourse=async(req,res)=>{
 
 // update course
 
-export const update=async(req,res)=>{
-    const courseId=req.params.courseId;
-    const {name,description,price}=req.body;
-    const file=req?.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo= cloudResponse.secure_url;
-    const isCourse=await Course.findByIdAndUpdate(courseId,{
+export const update = async (req, res) => {
+    const courseId = req.params.courseId;
+    const { name, description, price } = req.body;
+    const file = req?.file;
+    let logo=null;
+    if (file) {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        logo = cloudResponse.secure_url;
+    }
+    const isCourse = await Course.findByIdAndUpdate(courseId, {
         name,
         description,
         price,
         logo
-    },{new:true})
-    if(!isCourse){
+    }, { new: true })
+    if (!isCourse) {
         return res.status(401).json({
-            "message":"Sorry No course with this name"
+            "message": "Sorry No course with this name"
         })
     }
-    else{
+    else {
         return res.status(201).json({
-            "message":"Course updated Successfully!!",
-            updatedCourse:isCourse
+            "message": "Course updated Successfully!!",
+            updatedCourse: isCourse
         })
     }
 }
 
-export const deletecourse=async(req,res)=>{
-    const courseId=req.params.courseId;
-    const isCourse=await Course.findByIdAndDelete(courseId);
-    if(!isCourse){
+export const deletecourse = async (req, res) => {
+    const courseId = req.params.courseId;
+    const isCourse = await Course.findByIdAndDelete(courseId);
+    if (!isCourse) {
         return res.status(401).json({
-            "message":"Sorry Can't delete the record with this name"
+            "message": "Sorry Can't delete the record with this name"
         })
     }
-    else{
+    else {
         await isCourse.deleteOne();
         res.status(201).json({
-            "message":"Course successfully Deleted!!"
+            "message": "Course successfully Deleted!!"
         })
     }
 }

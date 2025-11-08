@@ -1,5 +1,5 @@
-import { use, useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom'
+import { useState } from 'react';
+import {Form, Link, useNavigate} from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -8,20 +8,23 @@ export default function UserRegister() {
     const navigate=useNavigate();
     const [name, setname] = useState('');
     const [password, setpassword] = useState('');
+    const [file,setfile]=useState('');
     const [alert, setalert] = useState(null);
     const HandleSubmit = async (e) => {
         e.preventDefault();
         setalert(null);
         console.log("name->", name);
         console.log("password->", password);
+        const formData = new FormData();
+        formData.append("name",name);
+        formData.append("password",password);
+        if(file) formData.append("file",file);
+        formData.append("role","User");
         // fetch call 
         try {
             const response = await fetch('http://localhost:8000/api/user/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/JSON'
-                },
-                body: JSON.stringify({ name, password, "role": "User" }),
+                body: formData,
                 credentials: 'include'
             })
             const data = await response.json();
@@ -76,6 +79,12 @@ export default function UserRegister() {
                             Enter Your Password:
                         </label>
                         <Input placeholder='rahul..' type="password" onChange={(e) => setpassword(e.target.value)} />
+                    </div>
+                    <div>
+                        <label>
+                            Profile Picture:
+                        </label>
+                        <Input placeholder="Enter image" type="file" onChange={(e)=>setfile(e.target.files?.[0])}/>
                     </div>
                     <Button>Submit</Button>
                     <div>

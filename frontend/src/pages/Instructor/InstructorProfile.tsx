@@ -36,7 +36,8 @@ const UpdateProfileForm = ({ activeUser, setIsDialogOpen, setParentAlert }) => {
         // In reality, this field would just be empty or for confirming the old password.
         password: activeUser?.password || '',
         bio:activeUser?.bio || '',
-        rating:activeUser?.rating || 0
+        rating:activeUser?.rating || 0,
+        profile_picture:activeUser?.profile_picture
     });
 
     // Handler to update local state on every keystroke
@@ -47,6 +48,12 @@ const UpdateProfileForm = ({ activeUser, setIsDialogOpen, setParentAlert }) => {
             [name]: value,
         }));
     };
+    
+    // for handling file change
+
+    const handlefileChange=(e)=>{
+        setFormData((prev)=>({...prev,profile_picture:e.target.files?.[0]}));
+    }
 
     // Handler for form submission
     const handleSubmit = async (e) => {
@@ -55,12 +62,15 @@ const UpdateProfileForm = ({ activeUser, setIsDialogOpen, setParentAlert }) => {
         console.log("Submitting updated data:", formData);
 
         try {
+            const formdata=new FormData();
+            formdata.append('name',formData.name);
+            formdata.append('password',formData.password);
+            formdata.append('bio',formData.bio);
+            formdata.append('rating',formData.rating);
+            if(formData.profile_picture) formdata.append('file',formData?.profile_picture);
             const response = await fetch(`http://localhost:8000/api/instructor/update/${activeUser._id}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'Application/JSON'
-                },
-                body: JSON.stringify(formData),
+                body:formdata,
                 credentials: 'include'
             })
             const data = await response.json();
@@ -145,6 +155,17 @@ const UpdateProfileForm = ({ activeUser, setIsDialogOpen, setParentAlert }) => {
                         name="rating"
                         value={formData.rating}
                         onChange={handleChange} // 👈 FIX: onChange handler is required
+                        className="col-span-3"
+                    />
+                </div>
+                {/* why i am not able to change the value of this field */}
+                <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="profile_picture" className="text-right">Profile Picture:</Label>
+                    <Input
+                        id="profile_picture"
+                        name="profile_picture"
+                        type="file"
+                        onChange={handlefileChange} // 👈 FIX: onChange handler is required
                         className="col-span-3"
                     />
                 </div>
@@ -241,7 +262,7 @@ export function InstructorProfile() {
                         <div className="flex flex-col items-center space-y-4 md:col-span-1 border-r md:border-r-0 border-b md:border-b-0 pb-6 md:pb-0 md:pr-8">
                             <div className="relative group">
                                 <Avatar className="h-32 w-32 border-4 border-orange-400 dark:border-yellow-400 shadow-lg">
-                                    <AvatarImage src={instructor.profilePictureUrl || "default_avatar.jpg"} alt={instructor.name} />
+                                    <AvatarImage src={instructor.profile_picture|| "default_avatar.jpg"} alt={instructor.name} />
                                     <AvatarFallback className="text-3xl bg-orange-100 dark:bg-yellow-900 text-orange-700 dark:text-yellow-200">
                                         {instructor.name ? instructor.name.charAt(0) : 'U'}
                                     </AvatarFallback>

@@ -31,36 +31,42 @@ import { Navbar } from '../../components/Navbar.tsx'; // Adjust path as needed
 const EditProfileDialog = ({activeUser, setIsDialogOpen ,setParentAlert}) => {
     const dispatch=useDispatch();
     // Local state to manage form inputs, initialized with activeUser data
-    const [formData, setFormData] = useState({
+    const [form, setform] = useState({
         name: activeUser?.name || '',
         // NOTE: Never pre-fill passwords in a real app, 
         // but for demonstrating control, we use the property here.
         // In reality, this field would just be empty or for confirming the old password.
         password: activeUser?.password || '',
+        file:activeUser?.profile_picture || ''
     });
 
     // Handler to update local state on every keystroke
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setform(prev => ({
             ...prev,
             [name]: value,
         }));
     };
 
+    const handlefileChange=(e)=>{
+        setform((prev)=>({...prev,"file":e.target.files?.[0]}));
+    }
+
     // Handler for form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         // 1. Perform client-side validation here
-        console.log("Submitting updated data:", formData);
+        console.log("Submitting updated data:", form);
+        const formdata=new FormData();
+        formdata.append("name",form.name);
+        formdata.append("password",form.password);
+        formdata.append("file",form.file);
 
         try {
             const response = await fetch(`http://localhost:8000/api/user/update/${activeUser._id}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'Application/JSON'
-                },
-                body: JSON.stringify(formData),
+                body: formdata,
                 credentials: 'include'
             })
             const data = await response.json();
@@ -109,7 +115,7 @@ const EditProfileDialog = ({activeUser, setIsDialogOpen ,setParentAlert}) => {
                     <Input
                         id="name-input"
                         name="name"
-                        value={formData.name}
+                        value={form.name}
                         onChange={handleChange} // 👈 FIX: onChange handler is required
                         className="col-span-3"
                     />
@@ -121,8 +127,20 @@ const EditProfileDialog = ({activeUser, setIsDialogOpen ,setParentAlert}) => {
                         name="password"
                         type="password"
                         placeholder="••••••••"
-                        value={formData.password} // Should only be used for demonstration
+                        value={form.password} // Should only be used for demonstration
                         onChange={handleChange} // 👈 FIX: onChange handler is required
+                        className="col-span-3"
+                    />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="profile_picture" className="text-right">Profile Picture</Label>
+                    <Input
+                        id="profile_picture"
+                        name="profile_picture"
+                        type="file"
+                        placeholder="Your image"
+                        value={form.profile_picture} // Should only be used for demonstration
+                        onChange={handlefileChange} // 👈 FIX: onChange handler is required
                         className="col-span-3"
                     />
                 </div>

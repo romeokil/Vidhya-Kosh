@@ -10,6 +10,7 @@ export default function InstructorRegister() {
     const [password, setpassword] = useState('');
     const [bio, setbio] = useState('');
     const [rating, setrating] = useState('');
+    const [file,setfile]=useState(null);
     const [alert, setalert] = useState('');
     const SubmitHandler = async (e) => {
         e.preventDefault();
@@ -17,13 +18,17 @@ export default function InstructorRegister() {
         console.log(password);
         console.log(bio);
         console.log(rating);
+        console.log(file);
         try {
+            const formdata=new FormData();
+            formdata.append('name',name);
+            formdata.append('password',password);
+            formdata.append('bio',bio);
+            formdata.append('rating',rating);
+            formdata.append('file',file);
             const response = await fetch(`http://localhost:8000/api/instructor/register`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'Application/JSON',
-                },
-                body: JSON.stringify({ name, password, bio, rating }),
+                body: formdata,
                 credentials: 'include'
             })
             const data = await response.json();
@@ -86,6 +91,10 @@ export default function InstructorRegister() {
                     <div>
                         <label>Rating:</label>
                         <input type="number" name="number" id="number" onChange={(e) => setrating(e.target.value)} />
+                    </div>
+                    <div>
+                        <label>Profile Picture:</label>
+                        <input type="file" onChange={(e)=>setfile(e.target.files?.[0])} placeholder='Profile photo'/>
                     </div>
                     <Button>Submit</Button>
                     <h2>If Already Registered!  <span className='hover:text-lg hover:underline'><Link to="/instructorlogin">Login</Link></span></h2>

@@ -8,10 +8,17 @@ import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
     const { name, password, role } = req.body;
-    const file = req.file;
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo= cloudResponse.secure_url;
+    console.log(name);
+    console.log(password);
+    console.log(role);
+    const file = req?.file;
+    let logo=null;
+    if (file) {
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        logo = cloudResponse.secure_url;
+    }
+
     // check missing credentials.
     if (!name || !password || !role) {
         return res.status(401).json({
@@ -26,17 +33,25 @@ export const register = async (req, res) => {
         })
     }
     // if not then we need to create newUser.
-    const newUser = await User.create({
-        name,
-        password,
-        role,
-        profile_picture:logo
-    })
-    newUser.save();
-    return res.status(201).json({
-        "message": "Successfully Registered!!",
-        newUser
-    })
+    try {
+        const newUser = await User.create({
+            name,
+            password,
+            role,
+            profile_picture: logo
+        })
+        return res.status(201).json({
+            "message": "Successfully Registered!!",
+            newUser,
+            success: true
+        })
+    }
+    catch (error) {
+        console.log("Error while registering user in backend", error);
+        return res.status(500).json({
+            "message": error.message
+        })
+    }
 }
 
 // login route
@@ -110,16 +125,15 @@ export const logout = async (req, res) => {
 export const update = async (req, res) => {
     const userId = req.params.id;
     const { name, password } = req.body;
-    const file=req?.file;
+    const file = req?.file;
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
-    const logo= cloudResponse.secure_url;
+    const logo = cloudResponse.secure_url;
     // first check user is logged in or not using jwt we will write at later stage.
     const usertobeUpdated = await User.findByIdAndUpdate(userId, {
         name,
         password,
-        profile_picture:logo
-
+        profile_picture: logo
     }, { new: true })
     if (!usertobeUpdated) {
         return res.status(401).json({

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, DollarSign, List, Star, FileText, CheckCircle } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { ArrowLeft, BookOpen, DollarSign, List, Star, FileText, CheckCircle,PictureInPicture } from 'lucide-react';
+import { useSelector ,useDispatch} from 'react-redux';
+import { update } from '@/redux/authSlice.ts';
 
 // --- SHADCN/UI COMPONENTS (Assuming you have these) ---
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import { Navbar } from '../../components/Navbar.tsx'; // Adjust path as needed
 
 export function CreateCourse() {
     const navigate = useNavigate();
+    const dispatch=useDispatch();
     // Assuming you still want to use the active user's ID for the course creator
     const activeUser = useSelector((state) => state.auth.activeUser);
 
@@ -25,7 +27,8 @@ export function CreateCourse() {
         name: '',
         description: '',
         price: '', // Store as string initially
-        rating: 0, // Default rating (can be hidden or made read-only for creation)
+        rating: 0,
+        logo:null // Default rating (can be hidden or made read-only for creation)
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [alert, setAlert] = useState(null); // For success/error messages
@@ -38,6 +41,11 @@ export function CreateCourse() {
         }));
     };
 
+    // for file change
+
+    const handlefileChange=(e)=>{
+        setCourseDetails((prevDetails)=>({...prevDetails,logo:e.target.files?.[0]}));
+    }
     // 2. Handle Form Submission
     const handleCreateCourse = async (e) => {
         e.preventDefault();
@@ -82,6 +90,12 @@ export function CreateCourse() {
                 title: "Success!",
                 description: `Course "${courseDetails.name}" has been successfully created.`,
             });
+            if(data.updatedinstructor){
+                dispatch(update(data.updatedinstructor))
+            }
+
+              await new Promise(resolve => setTimeout(resolve, 1500));
+              navigate('/instructorlanding')
             }
             else{
                 setAlert({
@@ -217,6 +231,21 @@ export function CreateCourse() {
                                         placeholder="29.99"
                                         value={courseDetails.rating}
                                         onChange={handleInputChange}
+                                        step="0.01"
+                                        required
+                                        className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="logo" className="flex items-center gap-1 font-semibold dark:text-gray-200">
+                                        <PictureInPicture className="h-4 w-4 text-yellow-500 fill-red-500" /> Logo
+                                    </Label>
+                                    <Input
+                                        id="logo"
+                                        name="logo"
+                                        type="file"
+                                        placeholder="29.99"
+                                        onChange={handlefileChange}
                                         step="0.01"
                                         required
                                         className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
