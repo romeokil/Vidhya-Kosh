@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Dummy data for component visualization
 const dummyCourse = {
@@ -23,16 +26,21 @@ const dummyCourse = {
 
 const CourseDetailPage = () => {
   const course = dummyCourse; // Use dummy data for display
+  const navigate=useNavigate();
   const params = useParams();
   const courseId = params.id;
   const [singlecourse, setsinglecourse] = useState(null);
   const [loading, setloading] = useState(false);
+  const handleGoBack=()=>{
+    navigate('/userlanding')
+  }
   useEffect(() => {
     try {
       setloading(true);
       async function getSingleCourse() {
         const response = await fetch(`http://localhost:8000/api/course/getcoursebyid/${courseId}`);
         const data = await response.json();
+        console.log(data.singlecourse);
         setsinglecourse(data.singlecourse);
       }
       getSingleCourse();
@@ -56,6 +64,14 @@ const CourseDetailPage = () => {
          {singlecourse ? (
           <>
            <div className={`bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-500`}>
+               <Button
+                        variant="outline"
+                        onClick={handleGoBack}
+                        className="flex items-center gap-2 text-gray-700 dark:text-gray-200"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Dashboard
+                    </Button>
             <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 
 
@@ -74,7 +90,7 @@ const CourseDetailPage = () => {
                       <div className="w-full md:w-1/3 flex-shrink-0">
                         <img
                           src={"https://www.photoshopvideotutorial.com/freepsdmock/wp-content/uploads/2024/10/AdobeStock_640654498-1-708x400-1.jpeg"}
-                          alt={course.name}
+                          alt={singlecourse?.name}
                           className="rounded-lg object-cover w-full aspect-video md:aspect-square shadow-md"
                         />
                       </div>
@@ -82,11 +98,11 @@ const CourseDetailPage = () => {
                       {/* Text Content */}
                       <div className="md:w-2/3">
                         <h1 className="text-3xl sm:text-4xl font-extrabold text-indigo-600 dark:text-indigo-400 mb-3">
-                          {singlecourse.name}
+                          {singlecourse?.name}
                         </h1>
 
                         <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-                          {singlecourse.description}
+                          {singlecourse?.description}
                         </p>
 
                         {/* Registered Users Count */}
@@ -94,14 +110,14 @@ const CourseDetailPage = () => {
                           <span className="mr-2 text-indigo-500">
                             {/*  */}
                           </span>
-                          <span className="font-semibold">{course.registeredUsers.toLocaleString()}</span>
+                          <span className="font-semibold">{course?.registeredUsers?.toLocaleString()}</span>
                           <span className="ml-1">students have already enrolled!</span>
                         </div>
 
                         {/* Enroll Row (Price and Button) */}
                         <div className="flex items-center justify-between border-t pt-4 border-gray-200 dark:border-gray-700">
                           <span className="text-4xl font-black text-green-600 dark:text-green-400">
-                            ${singlecourse.price}
+                            ${singlecourse?.price}
                           </span>
                           <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition duration-300 shadow-md transform hover:scale-[1.02] focus:ring-4 focus:ring-indigo-300">
                             Enroll Now
@@ -120,26 +136,26 @@ const CourseDetailPage = () => {
 
                     <div className="flex items-start space-x-6">
                       <img
-                        src="/images/instructor-avatar.jpg"
-                        alt={course.instructor.name}
+                        src={singlecourse?.author?.profile_picture || "/images/instructor-avatar.jpg"}
+                        alt={course?.instructor?.name}
                         className="w-20 h-20 rounded-full object-cover shadow-lg flex-shrink-0"
                       />
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{singlecourse.author.name}</h3>
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{singlecourse?.author?.name}</h3>
 
                         {/* Rating */}
                         <div className="flex items-center my-2">
                           <span className="text-yellow-500 mr-1 text-xl">⭐</span>
-                          <span className="text-gray-700 dark:text-gray-300 font-bold">{singlecourse.author.rating}</span>
+                          <span className="text-gray-700 dark:text-gray-300 font-bold">{singlecourse?.author?.rating}</span>
                           <span className="text-gray-500 dark:text-gray-400 ml-1">(Certified Expert)</span>
                         </div>
 
                         {/* Bio */}
-                        <p className="text-gray-600 dark:text-gray-400 mb-4">{singlecourse.author.bio}</p>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">{singlecourse?.author?.bio}</p>
 
                         {/* See Other Courses Button */}
                         <button className="flex items-center text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-800 dark:hover:text-indigo-300 transition">
-                          See {course.instructor.coursesCount} other courses by this instructor
+                          See {course?.instructor?.coursesCount} other courses by this instructor
                           <span className="ml-2">→</span>
                         </button>
                       </div>
@@ -165,7 +181,7 @@ const CourseDetailPage = () => {
                     {/* Re-iterate price and enroll button for visibility */}
                     <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
                       <span className="text-2xl font-bold text-green-600 dark:text-green-400 block mb-3">
-                        ${singlecourse.price}
+                        ${singlecourse?.price}
                       </span>
                       <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-lg transition duration-300">
                         I Want This Course!
