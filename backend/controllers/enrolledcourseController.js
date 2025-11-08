@@ -10,7 +10,7 @@ export const checkenrolledCourse = async (req, res) => {
     console.log("courseId", courseId);
     console.log("userId", userId);
     const getallenrolledCourse = await enrolledCourse.find({});
-    const user=await User.findById({userId});
+    const user=await User.findById(userId);
     console.log(getallenrolledCourse);
     let alreadyEnrolled = getallenrolledCourse.map((enrolledCourse) => {
         return enrolledCourse.user.toString() === userId && enrolledCourse.course.toString() === courseId;
