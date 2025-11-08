@@ -17,6 +17,10 @@ const courseSchema=mongoose.Schema({
         type:Number,
         required:true
     },
+    logo:{
+        type:String,
+        default:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/500px-Unknown_person.jpg"
+    },
     author:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Instructors',

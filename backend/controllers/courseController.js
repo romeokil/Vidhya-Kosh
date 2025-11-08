@@ -1,11 +1,17 @@
 import Course from "../models/Course.js";
 import Instructor from "../models/Instructor.js";
+import getDataUri from "../utils/datauri.js"
+import cloudinary from "../utils/cloudinary.js";
 // register course
 
 export const register=async(req,res)=>{
     const userId=req.id;
     console.log("instructor ka userId hai ye",userId);
     const {name,description,price,rating}=req.body;
+    const file=req?.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const logo= cloudResponse.secure_url;
     if(!name || !description || !price){
         return res.status(201).json({
             "message":"Sorry Missing credentials!!"
@@ -33,6 +39,7 @@ export const register=async(req,res)=>{
             description,
             price,
             rating,
+            logo,
             author:userId
         })
         registerCourse=await registerCourse.populate('author');
@@ -92,10 +99,15 @@ export const getallcourse=async(req,res)=>{
 export const update=async(req,res)=>{
     const courseId=req.params.courseId;
     const {name,description,price}=req.body;
+    const file=req?.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const logo= cloudResponse.secure_url;
     const isCourse=await Course.findByIdAndUpdate(courseId,{
         name,
         description,
-        price
+        price,
+        logo
     },{new:true})
     if(!isCourse){
         return res.status(401).json({

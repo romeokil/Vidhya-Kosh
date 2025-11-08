@@ -1,9 +1,15 @@
 import Instructor from "../models/Instructor.js";
 import jwt from 'jsonwebtoken';
+import getDataUri from "../utils/datauri.js"
+import cloudinary from "../utils/cloudinary.js";
 //instructor register  
 
 export const register=async(req,res)=>{
     const {name,password,bio,rating}=req.body;
+    const file=req?.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const logo= cloudResponse.secure_url;
     if(!name || !password || !bio || !rating){
         return res.status(401).json({
             "message":"Sorry Missing credentials"
@@ -19,7 +25,8 @@ export const register=async(req,res)=>{
         name,
         password,
         bio,
-        rating
+        rating,
+        profile_picture:logo
     })
     newInstructor.save();
     return res.status(201).json({
@@ -82,11 +89,16 @@ export const logout=async(req,res)=>{
 export const update=async(req,res)=>{
     const instructorId=req.params.id;
     const {name,password,bio,rating}=req.body;
+    const file=req.file;
+    const fileUri = getDataUri(file);
+    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const logo= cloudResponse.secure_url;
     const findInstructor=await Instructor.findByIdAndUpdate(instructorId,{
         name,
         password,
         bio,
-        rating
+        rating,
+        profile_picture:logo
     },{new:true});
     if(!findInstructor){
         return res.status(201).json({

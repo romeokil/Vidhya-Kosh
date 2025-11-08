@@ -21,6 +21,10 @@ const instructorSchema=mongoose.Schema({
         type:String,
         default:"Instructor"
     },
+    profile_picture:{
+        type:String,
+        default:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/500px-Unknown_person.jpg"
+    },
     publishedcourses:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Courses'
