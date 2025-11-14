@@ -10,9 +10,6 @@ export default function CheckRegister() {
             <Button variant="secondary">
               <Link to='/instructorregister'>With Instructor</Link>
             </Button>
-            <Button variant="secondary">
-              <Link to='/checkregister'>With Admin</Link>
-            </Button>
         </div>
     </div>
   )

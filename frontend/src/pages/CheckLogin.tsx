@@ -11,7 +11,7 @@ export default function CheckLogin() {
               <Link to="/instructorlogin">With Instructor</Link>
             </Button>
             <Button variant="secondary">
-              <Link to='/checklogin'>With Admin</Link>
+              <Link to='/adminlogin'>With Admin</Link>
             </Button>
         </div>
     </div>

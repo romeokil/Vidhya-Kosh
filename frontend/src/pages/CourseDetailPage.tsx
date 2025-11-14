@@ -40,11 +40,7 @@ const CourseDetailPage = () => {
   const activeUser=useSelector((state)=>state.auth.activeUser);
   const [singlecourse, setsinglecourse] = useState(null);
   const [loading, setloading] = useState(false);
-  const [alert,setalert]=useState({
-    variant:'',
-    title:'',
-    description:'',
-  })
+  const [alert,setalert]=useState(null)
   const handleGoBack = () => {
     navigate('/userlanding')
   }

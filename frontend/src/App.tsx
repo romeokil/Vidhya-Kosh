@@ -15,6 +15,8 @@ import { InstructorProfile } from "./pages/Instructor/InstructorProfile"
 import { CreateCourse } from "./pages/Instructor/Createcourse"
 import UserEnrolled from "./pages/User/UserEnrolled"
 import CourseDetailPage from "./pages/CourseDetailPage"
+import AdminLogin from './pages/Admin/AdminLogin'
+import { Dashboard } from "./pages/Admin/Dashboard"
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
         <Route path='/createcourse' element={<CreateCourse/>}></Route>
         <Route path="/seeallcourses" element={<SeeAllCourses/>}></Route>
         <Route path="/coursedetail/:id" element={<CourseDetailPage/>}></Route>
+        <Route path='/adminlogin' element={<AdminLogin/>}></Route>
+        <Route path='/admindashboard' element={<Dashboard/>}></Route>
       </Routes>
     </ThemeProvider>
   )
