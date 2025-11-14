@@ -7,6 +7,7 @@ import userRoute from './routes/UserRoute.js';
 import courseRoute from './routes/courseRoute.js';
 import instructorRoute from './routes/instructorRoute.js'
 import enrolledcourseRoute from './routes/enrolledcourseRoute.js'
+import adminRoute from './routes/adminRoute.js'
 const corsOption={
     origin:'http://localhost:5173',
     credentials:true
@@ -27,6 +28,7 @@ app.use('/api/user',userRoute);
 app.use('/api/course',courseRoute);
 app.use('/api/instructor',instructorRoute);
 app.use('/api/enrolledcourse',enrolledcourseRoute);
+app.use('/api/admin',adminRoute)
 
 app.listen(PORT,async()=>{
     try{
