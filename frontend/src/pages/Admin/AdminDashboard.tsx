@@ -26,38 +26,57 @@ export default function AdminDashboard() {
                 const response1 = await fetch('http://localhost:8000/api/admin/getallusers');
                 const data1 = await response1.json();
                 console.log(data1);
-                const filtereduser=data1.allusers.map((user)=>({
-                    name:user.name,
-                    profile_picture:user.profile_picture,
-                    role:user.role
+                const filtereduser = data1.allusers.map((user) => ({
+                    table: {
+                        name: user.name,
+                        profile_picture: user.profile_picture,
+                        role: user.role
+                    },
+                    full: user
+
                 }));
-                console.log("filtereduser",filtereduser)
+                console.log("filtereduser", filtereduser)
                 setusers(filtereduser);
                 const response2 = await fetch('http://localhost:8000/api/admin/getallinstructors');
                 const data2 = await response2.json();
                 console.log(data2);
-                const filteredinstructor=data2.allinstructors.map((instructor)=>({
-                    name:instructor.name,
-                    bio:instructor.bio,
-                    rating:instructor.rating,
-                    publishedcourses:instructor.publishedcourses
+                const filteredinstructor = data2.allinstructors.map((instructor) => ({
+                    table: {
+                        name: instructor.name,
+                        bio: instructor.bio,
+                        rating: instructor.rating,
+                        publishedcourses: instructor.publishedcourses
+                    },
+                    full: instructor
                 }));
                 setinstructors(filteredinstructor);
                 const response3 = await fetch('http://localhost:8000/api/admin/getallcourses');
                 const data3 = await response3.json();
                 console.log(data3);
-                const filteredcourse=data3.allcourses.map((course)=>({
-                    name:course.name,
-                    description:course.description,
-                    price:course.price,
-                    author:course.author,
-                    logo:course.logo
+                const filteredcourse = data3.allcourses.map((course) => ({
+                    table: {
+                        name: course.name,
+                        description: course.description,
+                        price: course.price,
+                        author: course.author,
+                        logo: course.logo
+                    },
+                    full: course
                 }))
                 setcourses(filteredcourse)
                 const response4 = await fetch('http://localhost:8000/api/admin/getallenrolledcourses');
                 const data4 = await response4.json();
                 console.log(data4.allenrolledcourses);
-                setenrolled(data4.allenrolledcourses);
+                const filteredenrolledcourse = data4.allenrolledcourses.map((enrolledcourse) => ({
+                    table: {
+                        user: enrolledcourse?.user?.name,
+                        course: enrolledcourse?.course?.name,
+                        createdAt: enrolledcourse?.createdAt,
+                        updatedAt: enrolledcourse?.updatedAt
+                    },
+                    full: enrolledcourse
+                }))
+                setenrolled(filteredenrolledcourse);
             }
             catch (error) {
                 console.log("Error while fetch calls in admin block", error)
@@ -69,6 +88,20 @@ export default function AdminDashboard() {
         }
         fetchDetails();
     }, [])
+
+    const renderCellValue = (key, value) => {
+        if (key === "profile_picture" || key === "logo") {
+            return (
+                <img
+                    src={value}
+                    alt="img"
+                    className="h-10 w-10 rounded-full object-cover"
+                />
+            );
+        }
+
+        return value;
+    };
     const [collapsed, setCollapsed] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [section, setSection] = useState("users");
@@ -109,51 +142,62 @@ export default function AdminDashboard() {
 
     const renderTable = () => {
         const data = mockData[section];
-        if (!data || data.length == 0) {
-            return <h1>Sorry no data found!!</h1>
-        }
+        if (!data || data.length === 0) return <h1>No data found</h1>;
+
+        const tableKeys = Object.keys(data[0].table);
+
         return (
-            <div className="w-full overflow-x-auto">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            {Object.keys(data[0]).map((key) => (
-                                <TableHead key={key}>{key.toUpperCase()}</TableHead>
-                            ))}
-                            <TableHead>ACTION</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {data.map((row) => (
-                            <TableRow key={row.id}>
-                                {Object.values(row).map((value, idx) => (
-                                    <TableCell key={idx}>
-                                        {typeof value === "object" ? JSON.stringify(value) : value}
-                                        {/* {value} */}
-                                    </TableCell>
-                                ))}
-                                <TableCell>
-                                    <Dialog>
-                                        <DialogTrigger>
-                                            <Button variant="outline" size="sm">View</Button>
-                                        </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogHeader>
-                                                <DialogTitle>Details</DialogTitle>
-                                            </DialogHeader>
-                                            <pre className="text-sm p-2 bg-muted rounded overflow-x-auto max-w-full">{JSON.stringify(row, null, 2)}</pre>
-                                            <DialogFooter>
-                                                <Button>Close</Button>
-                                            </DialogFooter>
-                                        </DialogContent>
-                                    </Dialog>
-                                </TableCell>
-                            </TableRow>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        {tableKeys.map((key) => (
+                            <TableHead key={key}>{key.toUpperCase()}</TableHead>
                         ))}
-                    </TableBody>
-                </Table>
-            </div>
-        );
+                        <TableHead>ACTION</TableHead>
+                    </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                    {data.map((row, idx) => (
+                        <TableRow key={idx}>
+                            {tableKeys.map((key) => (
+                                <TableCell key={key}>
+                                    {renderCellValue(key, row.table[key])}
+                                </TableCell>
+                            ))}
+
+                            <TableCell>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button size="sm" variant="outline">View</Button>
+                                    </DialogTrigger>
+
+                                    <DialogContent className="max-w-xl">
+                                        <DialogHeader>
+                                            <DialogTitle>Full Details</DialogTitle>
+                                        </DialogHeader>
+
+                                        {/* DETAILS VIEW */}
+                                        <div className="space-y-2 text-sm">
+                                            {Object.entries(row.full).map(([key, value]) => (
+                                                <div key={key} className="flex gap-2">
+                                                    <span className="font-semibold">{key}:</span>
+                                                    <span>
+                                                        {typeof value === "string" && value.startsWith("http")
+                                                            ? <img src={value} className="h-20 rounded" />
+                                                            : JSON.stringify(value)}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        )
     };
 
     return (
