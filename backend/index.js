@@ -8,35 +8,52 @@ import courseRoute from './routes/courseRoute.js';
 import instructorRoute from './routes/instructorRoute.js'
 import enrolledcourseRoute from './routes/enrolledcourseRoute.js'
 import adminRoute from './routes/adminRoute.js'
-const corsOption={
-    origin:'http://localhost:5173',
-    credentials:true
+import { ingestCourses } from './chatbot/ingestCourse.js'
+const corsOption = {
+    origin: 'http://localhost:5173',
+    credentials: true
 }
-const app=express();
+const app = express();
 dotenv.config();
-const PORT=8000;
+const PORT = 8000;
 app.use(cors(corsOption));
 app.use(express.json());
 app.use(cookieParser());
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.status(201).json({
-        "message":"Welcome to the Get request!"
+        "message": "Welcome to the Get request!"
     })
-})  
+})
 
-app.use('/api/user',userRoute);
-app.use('/api/course',courseRoute);
-app.use('/api/instructor',instructorRoute);
-app.use('/api/enrolledcourse',enrolledcourseRoute);
-app.use('/api/admin',adminRoute)
+app.use('/api/user', userRoute);
+app.use('/api/course', courseRoute);
+app.use('/api/instructor', instructorRoute);
+app.use('/api/enrolledcourse', enrolledcourseRoute);
+app.use('/api/admin', adminRoute)
 
-app.listen(PORT,async()=>{
-    try{
+app.listen(PORT, async () => {
+    try {
         await mongoose.connect(process.env.MONGO_URL);
         console.log(`Database connected Successfully!!`)
     }
-    catch(error){
+    catch (error) {
         console.log('Error while connecting to database')
     }
     console.log(`Server is running at ${PORT}`);
 })
+
+async function init() {
+    try {
+        console.log('Starting the course Ingestion in Pinecone...');
+        await ingestCourses();
+        console.log('Ending the course Ingestion in Pinecone.. ');
+    }
+    catch (error) {
+        console.log('Error while course ingestion in Pinecone..',error)
+    }
+    finally {
+        console.log('Finally Ingestion Completed...')
+    }
+}
+
+await init();
