@@ -1,29 +1,67 @@
-import express from 'express'
+import express from 'express';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv'
-import cors from 'cors'
+import dotenv from 'dotenv';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
+
 import userRoute from './routes/UserRoute.js';
 import courseRoute from './routes/courseRoute.js';
-import instructorRoute from './routes/instructorRoute.js'
-import enrolledcourseRoute from './routes/enrolledcourseRoute.js'
-import adminRoute from './routes/adminRoute.js'
-import { ingestCourses } from './chatbot/ingestCourse.js'
-const corsOption = {
+import instructorRoute from './routes/instructorRoute.js';
+import enrolledcourseRoute from './routes/enrolledcourseRoute.js';
+import adminRoute from './routes/adminRoute.js';
+
+import { ingestCourses } from './chatbot/ingestCourse.js';
+import { searchCourses } from './chatbot/testsearchCourse.js';
+
+// environment laod kro pehle.
+dotenv.config();
+
+const app = express();
+const PORT = 8000;
+
+// check ki course ingestion complete hua ki ni.
+let isIngestionComplete = false;
+
+// middleware.
+app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
-}
-const app = express();
-dotenv.config();
-const PORT = 8000;
-app.use(cors(corsOption));
+}));
 app.use(express.json());
 app.use(cookieParser());
+
+// just to check our app server is running or not.
 app.get('/', (req, res) => {
     res.status(201).json({
-        "message": "Welcome to the Get request!"
-    })
-})
+        message: "Server is running 🚀"
+    });
+});
+
+// ingestion route api/chatbot wala.
+
+app.post('/api/chatbot', async (req, res) => {
+    if (!isIngestionComplete) {
+        return res.status(503).json({
+            message: "System is initializing. Please try again in a moment."
+        });
+    }
+
+    const { message } = req.body;
+
+    if (!message) {
+        return res.status(400).json({
+            message: "Message should not be empty"
+        });
+    }
+
+    try {
+        const reply = await searchCourses(message);
+        res.status(200).json({ reply });
+    } catch (error) {
+        console.error("Chatbot error:", error);
+        res.status(500).json({ error: "Chatbot failed" });
+    }
+});
 
 app.use('/api/user', userRoute);
 app.use('/api/course', courseRoute);
@@ -31,29 +69,31 @@ app.use('/api/instructor', instructorRoute);
 app.use('/api/enrolledcourse', enrolledcourseRoute);
 app.use('/api/admin', adminRoute)
 
-app.listen(PORT, async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URL);
-        console.log(`Database connected Successfully!!`)
-    }
-    catch (error) {
-        console.log('Error while connecting to database')
-    }
-    console.log(`Server is running at ${PORT}`);
-})
 
-async function init() {
+async function startServer() {
     try {
-        console.log('Starting the course Ingestion in Pinecone...');
+        console.log("Connecting to MongoDB...");
+        await mongoose.connect(process.env.MONGO_URL);
+        console.log("✅ Database connected successfully");
+
+        console.log("Starting course ingestion into Pinecone...");
         await ingestCourses();
-        console.log('Ending the course Ingestion in Pinecone.. ');
-    }
-    catch (error) {
-        console.log('Error while course ingestion in Pinecone..',error)
-    }
-    finally {
-        console.log('Finally Ingestion Completed...')
+        console.log("✅ Course ingestion completed");
+
+        // ingestion completed mark kr diye.
+        isIngestionComplete = true;
+
+        // ingestion complete krne ke baad server start kr rhe hai.
+        app.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`);
+            console.log("Chatbot is ready to accept requests");
+        });
+
+    } catch (error) {
+        console.error("Startup failed:", error);
+        process.exit(1); // startup fail ho gy toh exit kr lena.
     }
 }
 
-await init();
+// start everything.
+startServer();

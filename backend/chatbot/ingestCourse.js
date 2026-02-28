@@ -8,7 +8,6 @@ import { syncCourseToVectorDB } from "../services/syncCourse.js";
 export async function ingestCourses() {
   try {
     console.log("🚀 Starting ingestion...");
-
     await mongoose.connect(process.env.MONGO_URL);
     console.log("✅ MongoDB connected just to ensure course table is active otherwise, how can we create embeddings all");
 
@@ -20,9 +19,7 @@ export async function ingestCourses() {
     }
 
     console.log("🎉 All courses synced to Pinecone");
-    process.exit();
   } catch (error) {
     console.error(error);
-    process.exit(1);
   }
 }

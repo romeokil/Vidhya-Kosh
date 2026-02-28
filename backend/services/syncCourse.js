@@ -12,10 +12,11 @@ export async function syncCourseToVectorDB(course) {
         id: course._id.toString(),
         values: embedding,
         metadata: {
-          name: course.name,
-          author: course.author,
-          price: course.price,
-          rating: course.rating,
+          name: course?.name,
+          description:course?.description,
+          author: course?.author,
+          price: course?.price,
+          rating: course?.rating,
         },
       },
     ]);
