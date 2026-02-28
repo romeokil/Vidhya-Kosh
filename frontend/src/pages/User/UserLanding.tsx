@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import CourseGrid from '../CourseGrid'
 import { setallcourses } from '@/redux/courseSlice.ts'
 import { useSelector, useDispatch } from 'react-redux'
+import ChatbotWidget from "../Chatbotwidget.tsx"
 export default function UserLanding() {
     const dispatch = useDispatch();
     const allcourses = useSelector((state) => state.course.allcourses);
@@ -62,6 +63,7 @@ export default function UserLanding() {
                     </div>
                 </div>
             </div>
+            <ChatbotWidget/>
         </>
 
     )
