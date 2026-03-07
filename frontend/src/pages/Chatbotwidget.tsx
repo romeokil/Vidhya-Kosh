@@ -25,20 +25,20 @@ export default function ChatbotWidget() {
   }, [messages, loading]);
 
   const formatReply = (reply: any) => {
-    if (Array.isArray(reply)) {
-      return `📚 Recommended Courses:\n\n${reply
-        .map((course: string, index: number) => `${index + 1}. ${course}`)
-        .join("\n")}`;
-    }
+     // CASE 1: Course recommendations (qki backend se hmlog array bhej rhe hai.)
+  if (Array.isArray(reply)) {
+    return `📚 Recommended Courses:\n\n${reply
+      .map((course: string, index: number) => `${index + 1}. ${course}`)
+      .join("\n")}`;
+  }
 
-    if (typeof reply === "string" && reply.includes(",")) {
-      const items = reply.split(",").map((item) => item.trim());
-      return `📚 Recommended Courses:\n\n${items
-        .map((course, index) => `${index + 1}. ${course}`)
-        .join("\n")}`;
-    }
-
+  // CASE 2: agr normal response diya toh hi hello, ya koi general response.
+  if (typeof reply === "string") {
     return reply;
+  }
+  // agr bechara ko kuch bhi smjh ni aaya toh.
+  // fallback
+  return "Sorry, something went wrong.";
   };
 
   const sendMessage = async () => {
