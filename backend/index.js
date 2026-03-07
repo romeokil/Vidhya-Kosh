@@ -12,6 +12,7 @@ import adminRoute from './routes/adminRoute.js';
 
 import { ingestCourses } from './chatbot/ingestCourse.js';
 import { searchCourses } from './chatbot/testsearchCourse.js';
+import { detectIntent } from './utils/intentDetection.js';
 
 // environment laod kro pehle.
 dotenv.config();
@@ -40,11 +41,6 @@ app.get('/', (req, res) => {
 // ingestion route api/chatbot wala.
 
 app.post('/api/chatbot', async (req, res) => {
-    if (!isIngestionComplete) {
-        return res.status(503).json({
-            message: "System is initializing. Please try again in a moment."
-        });
-    }
 
     const { message } = req.body;
 
@@ -53,7 +49,39 @@ app.post('/api/chatbot', async (req, res) => {
             message: "Message should not be empty"
         });
     }
+    const intent = detectIntent(message);
+    try {
+        // agr intent greeting ka hua toh.
+        if (intent === "greeting") {
+            return res.json({
+                reply: "Hello 👋 I can help you find the best courses. Ask me something like 'Recommend me a React course'."
+            });
 
+        }
+        //agr course wala intent hua toh.
+        else if (intent === "course") {
+            if (!isIngestionComplete) {
+                return res.status(503).json({
+                    message: "System is initializing. Please try again in a moment."
+                });
+            }
+
+            const courses = await searchCourses(message);
+
+            return res.json({
+                reply: courses
+            });
+        }
+        // agr kuch general way me puch rha hai toh.
+        else if (intent === "general") {
+            return res.json({
+                reply: "I'm here to help with course recommendations. Ask me about learning topics like React, AI, Web Development etc."
+            });
+        }
+    }
+    catch (error) {
+
+    }
     try {
         const reply = await searchCourses(message);
         res.status(200).json({ reply });
